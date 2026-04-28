@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Stavros Papasotiropoulos — SOC Analyst, OSINT Investigator, Electrical Engineer, Educator." />
+  <title>S.PAPASOTIROPOULOS // MISSION CONSOLE v3.0</title>
+
+  <!-- ✦ FAVICON — cyan hexagon SVG matching the brand sigil -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ============================================================== -->
+  <!-- BOOT OVERLAY                                                    -->
+  <!-- ============================================================== -->
+  <div class="boot" id="boot">
+    <div class="boot__inner">
+      <div class="boot__logo">⬢ MISSION CONSOLE</div>
+      <pre class="boot__log" id="boot-log"></pre>
+      <div class="boot__bar"><span id="boot-bar-fill"></span></div>
+      <p class="boot__hint">// hint: try the konami code</p>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- ✦ NEW: KONAMI TERMINAL OVERLAY                                  -->
+  <!-- Triggered by: ↑↑↓↓←→←→BA                                       -->
+  <!-- ============================================================== -->
+  <div class="k-overlay" id="k-overlay" aria-hidden="true">
+    <div class="k-term">
+      <header class="k-term__head">
+        <span class="k-term__dot k-term__dot--r"></span>
+        <span class="k-term__dot k-term__dot--y"></span>
+        <span class="k-term__dot k-term__dot--g"></span>
+        <span class="k-term__title">root@papasotiropoulos — CLASSIFIED ACCESS</span>
+        <button class="k-term__close" id="k-close" aria-label="Close terminal">✕</button>
+      </header>
+      <div class="k-term__body" id="k-body">
+        <!-- JS writes output here -->
+      </div>
+      <div class="k-term__input-row">
+        <span class="k-term__prompt">$</span>
+        <input class="k-term__input" id="k-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+          spellcheck="false" placeholder="type 'help' to see commands" aria-label="Terminal input" />
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- ✦ NEW: NODE-CLICK PROJECT CARD                                  -->
+  <!-- Pops in when user clicks a glowing project node in the 3D scene -->
+  <!-- ============================================================== -->
+  <div class="node-card" id="node-card" aria-hidden="true">
+    <div class="panel">
+      <div class="panel__corner panel__corner--tl"></div>
+      <div class="panel__corner panel__corner--tr"></div>
+      <div class="panel__corner panel__corner--bl"></div>
+      <div class="panel__corner panel__corner--br"></div>
+      <div class="panel__scan"></div>
+      <header class="panel__head">
+        <span class="panel__tag" id="nc-tag">PROJECT</span>
+        <button class="node-card__close" id="nc-close" aria-label="Close">✕</button>
+      </header>
+      <h3 class="node-card__title" id="nc-title">—</h3>
+      <p class="node-card__body" id="nc-body">—</p>
+      <ul class="chips" id="nc-chips"></ul>
+      <a class="cta node-card__cta" id="nc-link" href="#" target="_blank" rel="noopener">
+        <span id="nc-link-label">→ View</span>
+        <span class="cta__rune">↗</span>
+      </a>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- THREE.JS CANVAS                                                 -->
+  <!-- ============================================================== -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="overlay-grain" aria-hidden="true"></div>
+  <div class="overlay-scanlines" aria-hidden="true"></div>
+  <div class="overlay-vignette" aria-hidden="true"></div>
+
+
+  <!-- ============================================================== -->
+  <!-- TOP HUD                                                         -->
+  <!-- ============================================================== -->
+  <header class="hud-top">
+    <div class="hud-top__left">
+      <div class="brand">
+        <span class="brand__sigil">⬢</span>
+        <span class="brand__name">PAPASOTIROPOULOS</span>
+        <span class="brand__sub">// node_07</span>
+      </div>
+      <div class="status-strip">
+        <span class="led led--green"></span><span>SOC&nbsp;ONLINE</span>
+        <span class="led led--cyan"></span><span>SIEM&nbsp;ACTIVE</span>
+        <span class="led led--amber"></span><span>OSINT&nbsp;FEED</span>
+      </div>
+    </div>
+
+    <nav class="hud-top__nav">
+      <a href="#hero"> <em>00</em> Console </a>
+      <a href="#engineer"> <em>01</em> Engineer</a>
+      <a href="#cyber"> <em>02</em> Cyber </a>
+      <a href="#educator"> <em>03</em> Educator</a>
+      <a href="#contact"> <em>04</em> Comms </a>
+    </nav>
+
+    <div class="hud-top__right">
+      <div class="clock">
+        <span class="clock__label">UTC</span>
+        <span class="clock__value" id="clock-utc">00:00:00</span>
+      </div>
+      <div class="clock">
+        <span class="clock__label">ATH</span>
+        <span class="clock__value" id="clock-ath">00:00:00</span>
+      </div>
+      <div class="geo">37.9838°N · 23.7275°E</div>
+    </div>
+  </header>
+
+
+  <!-- ============================================================== -->
+  <!-- LEFT RAIL — threat feed                                         -->
+  <!-- ============================================================== -->
+  <aside class="rail rail--left">
+    <div class="rail__head">
+      <span class="rail__dot rail__dot--green"></span>
+      <span>THREAT&nbsp;FEED</span>
+      <span class="rail__meta">/live</span>
+    </div>
+    <ul class="rail__feed" id="threat-feed"></ul>
+    <div class="rail__foot">
+      <span>SIGNAL: <em>STRONG</em></span>
+      <span>v3.0.0</span>
+    </div>
+  </aside>
+
+
+  <!-- ============================================================== -->
+  <!-- RIGHT RAIL — telemetry + radar                                  -->
+  <!-- ============================================================== -->
+  <aside class="rail rail--right">
+    <div class="rail__head">
+      <span class="rail__dot rail__dot--cyan"></span>
+      <span>TELEMETRY</span>
+      <span class="rail__meta">/sys</span>
+    </div>
+
+    <ul class="metrics">
+      <li><span class="metrics__k">YRS&nbsp;ACTIVE</span><span class="metrics__v" data-counter="5">0</span></li>
+      <li><span class="metrics__k">CERTS</span> <span class="metrics__v" data-counter="11">0</span></li>
+      <li><span class="metrics__k">TOOLS</span> <span class="metrics__v" data-counter="14">0</span></li>
+      <li><span class="metrics__k">LANGS</span> <span class="metrics__v" data-counter="2">0</span></li>
+    </ul>
+
+    <div class="radar">
+      <div class="radar__rings"></div>
+      <div class="radar__sweep"></div>
+      <span class="radar__blip" style="--x:30%; --y:40%;"></span>
+      <span class="radar__blip" style="--x:70%; --y:60%;"></span>
+      <span class="radar__blip" style="--x:55%; --y:25%;"></span>
+      <span class="radar__label">RADAR // 30km</span>
+    </div>
+
+    <div class="rail__foot">
+      <!-- ✦ KONAMI hint -->
+      <span class="konami-hint" title="↑↑↓↓←→←→BA">⬡ CLASSIFIED</span>
+      <span>FPS <em id="fps-readout">--</em></span>
+    </div>
+  </aside>
+
+
+  <!-- ============================================================== -->
+  <!-- BOTTOM HUD                                                      -->
+  <!-- ============================================================== -->
+  <footer class="hud-bottom">
+    <div class="progress">
+      <span class="progress__label">SCROLL</span>
+      <div class="progress__track"><span id="progress-fill"></span></div>
+      <span class="progress__pct" id="progress-pct">000%</span>
+    </div>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__inner" id="ticker"></div>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================== -->
+  <!-- MAIN CONTENT                                                    -->
+  <!-- ============================================================== -->
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero__grid">
+
+        <div class="hero__terminal">
+          <div class="terminal">
+            <div class="terminal__head">
+              <span class="terminal__dot terminal__dot--r"></span>
+              <span class="terminal__dot terminal__dot--y"></span>
+              <span class="terminal__dot terminal__dot--g"></span>
+              <span class="terminal__title">root@papasotiropoulos:~#</span>
+            </div>
+            <pre class="terminal__body" id="hero-terminal"></pre>
+          </div>
+
+          <div class="hero__meta">
+            <span class="tag tag--live"><span class="tag__pulse"></span>OPERATIONAL</span>
+            <span class="tag">[ ATH · GR ]</span>
+            <span class="tag">[ EST. 1999 ]</span>
+            <span class="tag">[ eCPPT · SAL1 ]</span>
+          </div>
+        </div>
+
+        <div class="hero__identity">
+          <h1 class="hero__name">
+            <span class="hero__given">Stavros</span>
+            <span class="hero__family">Papasotiropoulos</span>
+          </h1>
+
+          <p class="hero__role">
+            <span>Electrical&nbsp;Engineer</span>
+            <i>·</i>
+            <span>SOC&nbsp;L1&nbsp;Analyst</span>
+            <i>·</i>
+            <span>OSINT&nbsp;Investigator</span>
+            <i>·</i>
+            <span>Educator</span>
+          </p>
+
+          <p class="hero__intro">
+            I monitor enterprise environments by day, hunt OSINT trails
+            by instinct, design circuits because I was trained to, and
+            teach because I always have. Scroll to fly — or click a
+            glowing node to pull its file.
+          </p>
+
+          <div class="stat-strip">
+            <div class="stat">
+              <span class="stat__num">2025</span>
+              <span class="stat__lbl">SOC@ADACOM</span>
+            </div>
+            <div class="stat">
+              <span class="stat__num" data-counter="11">0</span>
+              <span class="stat__lbl">CERTIFICATIONS</span>
+            </div>
+            <div class="stat">
+              <span class="stat__num">eCPPT</span>
+              <span class="stat__lbl">CERTIFIED</span>
+            </div>
+            <div class="stat">
+              <span class="stat__num" data-counter="14">0</span>
+              <span class="stat__lbl">TOOLS DEPLOYED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__cue">
+        <span class="cue__line"></span>
+        <span class="cue__txt">SCROLL // INITIATE FLIGHT · CLICK NODES // PULL FILES</span>
+        <span class="cue__line"></span>
+      </div>
+    </section>
+
+
+    <!-- MODULE 01 — THE ENGINEER -->
+    <section class="module" id="engineer" data-module="01">
+      <div class="module__layout">
+        <header class="module__label">
+          <span class="module__index">MODULE_01</span>
+          <span class="module__status">// ACTIVE</span>
+          <h2 class="module__title">The Engineer.</h2>
+          <span class="module__sub">Educational Electrical &amp; Electronic Engineering — ASPAITE</span>
+        </header>
+
+        <article class="panel panel--lg">
+          <div class="panel__corner panel__corner--tl"></div>
+          <div class="panel__corner panel__corner--tr"></div>
+          <div class="panel__corner panel__corner--bl"></div>
+          <div class="panel__corner panel__corner--br"></div>
+          <div class="panel__scan"></div>
+          <header class="panel__head">
+            <span class="panel__tag">SUBSYSTEM // hardware</span>
+            <span class="panel__id">[ 01.A ]</span>
+          </header>
+          <p class="panel__body">
+            A bachelor's foundation in circuit design, digital and analog
+            systems, embedded systems, telecommunications and network
+            fundamentals — earned at ASPAITE. As Back Office Engineer at
+            Kapa Install I optimized technician scheduling, ran the e-shop
+            infrastructure, and led R&amp;D into emerging electrical systems.
+          </p>
+          <ul class="chips">
+            <li>AutoCAD</li>
+            <li>MATLAB</li>
+            <li>Embedded&nbsp;Sys</li>
+            <li>Energy&nbsp;Distribution</li>
+            <li>Circuit&nbsp;Design</li>
+            <li>Telecom</li>
+          </ul>
+        </article>
+
+        <article class="panel panel--sm">
+          <div class="panel__corner panel__corner--tl"></div>
+          <div class="panel__corner panel__corner--br"></div>
+          <header class="panel__head">
+            <span class="panel__tag">METRICS</span>
+            <span class="panel__id">[ 01.B ]</span>
+          </header>
+          <div class="panel__metrics">
+            <div><b>2018-2025</b><span>ASPAITE BSc</span></div>
+            <div><b>Kapa Install</b><span>Back Office Engineer</span></div>
+            <div><b>R&amp;D</b><span>Emerging electrical sys</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+
+    <!-- MODULE 02 — CYBER / OSINT -->
+    <section class="module" id="cyber" data-module="02">
+      <div class="module__layout module__layout--right">
+        <header class="module__label module__label--right">
+          <span class="module__index">MODULE_02</span>
+          <span class="module__status">// ELEVATED</span>
+          <h2 class="module__title">The Cyber<br />Investigator.</h2>
+          <span class="module__sub">SOC L1 Analyst @ Adacom · eCPPT · TryHackMe</span>
+        </header>
+
+        <article class="panel panel--lg panel--accent">
+          <div class="panel__corner panel__corner--tl"></div>
+          <div class="panel__corner panel__corner--tr"></div>
+          <div class="panel__corner panel__corner--bl"></div>
+          <div class="panel__corner panel__corner--br"></div>
+          <div class="panel__scan"></div>
+          <header class="panel__head">
+            <span class="panel__tag">SUBSYSTEM // detection</span>
+            <span class="panel__id">[ 02.A ]</span>
+          </header>
+          <p class="panel__body">
+            I monitor client environments at Adacom, triage L1 alerts and
+            execute incident playbooks to contain real threats. I built a
+            functional SOC lab around <b>Wazuh SIEM</b> on Linux — log
+            forwarding from endpoints, custom detection rules, brute-force
+            and suspicious PowerShell investigation.
+          </p>
+          <ul class="chips chips--accent">
+            <li>Wazuh SIEM</li>
+            <li>Wireshark</li>
+            <li>Nmap</li>
+            <li>Metasploit</li>
+            <li>Burp&nbsp;Suite</li>
+            <li>Hydra</li>
+            <li>Python</li>
+            <li>Incident&nbsp;Response</li>
+            <li>Threat&nbsp;Hunting</li>
+          </ul>
+          <div class="certs">
+            <span>› eCPPT — INE</span>
+            <span>› SOC L1 Analyst — TryHackMe</span>
+            <span>› Jr Penetration Tester — TryHackMe</span>
+            <span>› Complete Ethical Hacking — Udemy</span>
+          </div>
+        </article>
+
+        <article class="panel panel--explorer">
+          <div class="panel__corner panel__corner--tl"></div>
+          <div class="panel__corner panel__corner--br"></div>
+          <header class="panel__head">
+            <span class="panel__tag">OSINT // node graph</span>
+            <span class="panel__id">[ 02.B · DRAG ]</span>
+          </header>
+          <div class="explorer">
+            <canvas id="explorer-canvas"></canvas>
+            <span class="explorer__hint">↻ DRAG TO ROTATE</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Horizontal toolkit -->
+      <div class="toolkit" id="toolkit">
+        <div class="toolkit__sticky">
+          <header class="toolkit__head">
+            <span class="toolkit__tag">02.C // ARSENAL</span>
+            <h3 class="toolkit__title">Tools deployed in the field.</h3>
+            <span class="toolkit__hint">→ scroll to advance the rack</span>
+          </header>
+          <div class="toolkit__rack" id="toolkit-rack">
+            <article class="tool"><span class="tool__num">/01</span>
+              <h4>Wazuh</h4>
+              <p>SIEM core. Built a working SOC lab — endpoint log forwarding, detection rules, alert triage.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+            <article class="tool"><span class="tool__num">/02</span>
+              <h4>Wireshark</h4>
+              <p>Packet dissection for traffic analysis, anomaly hunting, and protocol-level forensics.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+            <article class="tool"><span class="tool__num">/03</span>
+              <h4>Nmap</h4>
+              <p>Network reconnaissance — host discovery, service fingerprinting, scripted scans.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+            <article class="tool"><span class="tool__num">/04</span>
+              <h4>Metasploit</h4>
+              <p>Exploitation framework — used during eCPPT prep and red-team simulations.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+            <article class="tool"><span class="tool__num">/05</span>
+              <h4>Burp&nbsp;Suite</h4>
+              <p>Web app proxy — intercept, replay, fuzz. Daily driver for application-layer testing.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+            <article class="tool"><span class="tool__num">/06</span>
+              <h4>Hydra</h4>
+              <p>Authentication brute-force — credential resilience testing in lab environments.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+            <article class="tool"><span class="tool__num">/07</span>
+              <h4>Python</h4>
+              <p>Automation glue. Custom parsers, log enrichers, OSINT scripts and SIEM integrations.</p><span
+                class="tool__status">DEPLOYED</span>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- MODULE 03 — THE EDUCATOR -->
+    <section class="module" id="educator" data-module="03">
+      <div class="module__layout">
+        <header class="module__label">
+          <span class="module__index">MODULE_03</span>
+          <span class="module__status">// BROADCASTING</span>
+          <h2 class="module__title">The Educator.</h2>
+          <span class="module__sub">Tutor · Web Developer · Platform Builder</span>
+        </header>
+
+        <article class="panel panel--lg">
+          <div class="panel__corner panel__corner--tl"></div>
+          <div class="panel__corner panel__corner--tr"></div>
+          <div class="panel__corner panel__corner--bl"></div>
+          <div class="panel__corner panel__corner--br"></div>
+          <div class="panel__scan"></div>
+          <header class="panel__head">
+            <span class="panel__tag">SUBSYSTEM // pedagogy</span>
+            <span class="panel__id">[ 03.A ]</span>
+          </header>
+          <p class="panel__body">
+            Since 2021 I've taught secondary, high-school and tertiary
+            students in Electrical Engineering — in person, remotely, and
+            at tutorial centers. I built and maintain a Greek educational
+            platform to scale that work, and I bring the same teaching
+            instinct into every technical handover and documentation sprint.
+          </p>
+          <ul class="chips">
+            <li>React.js</li>
+            <li>JavaScript</li>
+            <li>HTML / CSS</li>
+            <li>WordPress</li>
+            <li>UX Design</li>
+            <li>Curriculum Design</li>
+            <li>Meta&nbsp;Front-End</li>
+          </ul>
+          <a class="cta" href="https://greek-eduplatform-re-fc99.bolt.host/" target="_blank" rel="noopener">
+            <span>→ Visit the Education Platform</span>
+            <span class="cta__rune">↗</span>
+          </a>
+        </article>
+
+        <article class="panel panel--sm">
+          <div class="panel__corner panel__corner--tr"></div>
+          <div class="panel__corner panel__corner--bl"></div>
+          <header class="panel__head">
+            <span class="panel__tag">CHANNELS</span>
+            <span class="panel__id">[ 03.B ]</span>
+          </header>
+          <div class="panel__metrics">
+            <div><b>2021-NOW</b><span>Private tutoring</span></div>
+            <div><b>Bolt.host</b><span>EduPlatform GR</span></div>
+            <div><b>Core Concepts</b><span>Web Developer</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+
+    <!-- MODULE 04 — ESTABLISH COMMS -->
+    <section class="module module--comms" id="contact" data-module="04">
+      <header class="comms__head">
+        <span class="comms__index">MODULE_04 // ESTABLISH&nbsp;COMMS</span>
+        <h2 class="comms__title">Open a channel.</h2>
+        <p class="comms__sub">Active for SOC, security engineering, threat-hunting and cyber-defence roles.</p>
+      </header>
+
+      <div class="comms__grid">
+        <a class="comm-card" href="mailto:spapasotiropoulos@gmail.com">
+          <span class="comm-card__lbl">// EMAIL</span>
+          <span class="comm-card__val">spapasotiropoulos@gmail.com</span>
+          <span class="comm-card__arrow">→</span>
+        </a>
+        <a class="comm-card" href="https://www.linkedin.com/in/stavros-papasotiropoulos-b35302200/" target="_blank"
+          rel="noopener">
+          <span class="comm-card__lbl">// LINKEDIN</span>
+          <span class="comm-card__val">/in/stavros-papasotiropoulos</span>
+          <span class="comm-card__arrow">↗</span>
+        </a>
+        <a class="comm-card" href="https://github.com/StevePapasot/edu-platform" target="_blank" rel="noopener">
+          <span class="comm-card__lbl">// GITHUB</span>
+          <span class="comm-card__val">/StevePapasot</span>
+          <span class="comm-card__arrow">↗</span>
+        </a>
+        <a class="comm-card" href="https://greek-eduplatform-re-fc99.bolt.host/" target="_blank" rel="noopener">
+          <span class="comm-card__lbl">// EDUPLATFORM</span>
+          <span class="comm-card__val">greek-eduplatform.bolt.host</span>
+          <span class="comm-card__arrow">↗</span>
+        </a>
+      </div>
+
+      <div class="comms__foot">
+        <span>© 2026 — S. PAPASOTIROPOULOS</span>
+        <span>BUILT WITH THREE.JS · GSAP · SCROLLTRIGGER</span>
+        <span>END_OF_TRANSMISSION ▮</span>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- LIBRARIES -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>
