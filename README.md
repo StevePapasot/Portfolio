@@ -14,4 +14,4 @@ A scroll-driven, interactive 3D portfolio built with Three.js, GSAP ScrollTrigge
 Three.js · GSAP · ScrollTrigger · Chakra Petch · JetBrains Mono
 
 ## Live
-[→ View live site](#https://spapasotiropoulos.com/) ← update this after deploying to Netlify/Vercel
+[→ View live site](https://spapasotiropoulos.com/)
