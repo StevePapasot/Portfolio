@@ -25,20 +25,31 @@ gsap.registerPlugin(ScrollTrigger);
 /* =====================================================================
    CONFIG
    ===================================================================== */
+
+/* Detect device capability — used to scale 3D scene complexity so mobile
+   doesn't drop frames. Considers viewport width, touch primary input, and
+   navigator.hardwareConcurrency (CPU cores) where available. */
+const _w = window.innerWidth;
+const _touch = matchMedia('(pointer: coarse)').matches;
+const _cores = navigator.hardwareConcurrency || 4;
+const IS_MOBILE = _w < 768 || (_touch && _w < 1024);
+const IS_LOW = IS_MOBILE || _cores <= 4;
+
 const CONFIG = {
   bgColor: 0x03060f,
   fogDensity: 0.018,
-  nodeCount: 120,
+  // Scale node/particle counts for the device tier
+  nodeCount: IS_MOBILE ? 55 : (IS_LOW ? 85 : 120),
   tunnelLength: 240,
   tunnelRadius: 10,
   nodeSize: 0.18,
   connectRadius: 4.2,
-  maxConnPerNode: 3,
-  particleCount: 900,
+  maxConnPerNode: IS_MOBILE ? 2 : 3,
+  particleCount: IS_MOBILE ? 350 : (IS_LOW ? 600 : 900),
   cameraStartZ: 8,
   cameraEndZ: -220,
   cameraEase: 0.07,
-  packetCount: 24,
+  packetCount: IS_MOBILE ? 10 : (IS_LOW ? 16 : 24),
   packetSpeed: 0.6,
   floatAmp: 0.35,
   floatSpeed: 0.5,
@@ -416,8 +427,13 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 0, CONFIG.cameraStartZ);
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: !IS_MOBILE,   // antialiasing is expensive on mobile GPUs
+  alpha: true,
+  powerPreference: IS_MOBILE ? 'low-power' : 'high-performance',
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 1.5 : 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(CONFIG.bgColor, 1);
 
@@ -672,10 +688,10 @@ gsap.utils.toArray('.module').forEach((sec) => {
   });
 });
 
-// Horizontal toolkit
+// Horizontal toolkit — only pin on desktop (>=1024px). Mobile gets native swipe.
 const toolkit = document.getElementById('toolkit');
 const rack = document.getElementById('toolkit-rack');
-if (toolkit && rack && window.innerWidth > 1100) {
+if (toolkit && rack && window.innerWidth >= 1024) {
   ScrollTrigger.create({
     trigger: toolkit, start: 'top top', end: 'bottom bottom', scrub: 1,
     onUpdate: (self) => {
@@ -776,13 +792,41 @@ animate(performance.now());
 
 
 /* =====================================================================
-   RESIZE
+   RESIZE — debounced + orientation-aware
+   On mobile, the URL bar collapse triggers many tiny resize events. We
+   debounce, and ignore height-only deltas under 150px (those are the
+   URL bar) to avoid unnecessary re-layouts.
    ===================================================================== */
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+let _resizeTimer = null;
+let _lastW = window.innerWidth;
+let _lastH = window.innerHeight;
+
+function handleResize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const dw = Math.abs(w - _lastW);
+  const dh = Math.abs(h - _lastH);
+
+  // Skip pure URL-bar-driven mobile resizes (small height delta, no width change)
+  if (dw === 0 && dh < 150 && IS_MOBILE) return;
+
+  _lastW = w;
+  _lastH = h;
+
+  camera.aspect = w / h;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(w, h);
   ScrollTrigger.refresh();
+}
+
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(handleResize, 120);
+});
+
+window.addEventListener('orientationchange', () => {
+  // Force a hard refresh on orientation change after the rotation animation completes
+  setTimeout(handleResize, 250);
 });
 
 
