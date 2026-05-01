@@ -471,17 +471,7 @@ button {
   margin-top: 1rem;
 }
 
-/* On screens where the rail is hidden, center the card instead */
-@media (max-width: 1280px) {
-  .node-card {
-    right: 50%;
-    transform: translateY(-50%) translateX(50%);
-  }
-
-  .node-card.is-open {
-    transform: translateY(-50%) translateX(50%);
-  }
-}
+/* Tablet/mobile node-card overrides live in the responsive section near the bottom */
 
 
 /* -------------------------------------------------------------------
@@ -1037,21 +1027,7 @@ main {
   padding: 0 calc(var(--rail-w) + 2rem);
 }
 
-@media (max-width: 1280px) {
-  .rail {
-    display: none;
-  }
-
-  main {
-    padding: 0 1.5rem;
-  }
-
-  .node-card {
-    right: 1rem;
-    left: 1rem;
-    width: auto;
-  }
-}
+/* Layout-shift behaviour for tablets/mobiles is consolidated in the responsive section at the bottom of this file */
 
 
 /* -------------------------------------------------------------------
@@ -1070,12 +1046,6 @@ main {
   grid-template-columns: minmax(280px, 0.8fr) 1.3fr;
   gap: 2rem;
   align-items: start;
-}
-
-@media (max-width: 900px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .terminal {
@@ -1354,15 +1324,6 @@ main {
 
 .module__layout>.panel:nth-of-type(2) {
   grid-area: secondary;
-}
-
-@media (max-width: 1100px) {
-
-  .module__layout,
-  .module__layout--right {
-    grid-template-columns: 1fr;
-    grid-template-areas: "label" "primary" "secondary";
-  }
 }
 
 .module__label {
@@ -1819,29 +1780,6 @@ main {
   border-radius: var(--radius);
 }
 
-@media (max-width: 1100px) {
-  .toolkit {
-    height: auto;
-  }
-
-  .toolkit__sticky {
-    position: static;
-    height: auto;
-  }
-
-  .toolkit__rack {
-    overflow-x: auto;
-    padding-bottom: 1rem;
-    scroll-snap-type: x mandatory;
-  }
-
-  .tool {
-    scroll-snap-align: start;
-    flex: 0 0 80vw;
-    height: auto;
-  }
-}
-
 
 /* -------------------------------------------------------------------
    16. COMMS
@@ -1964,45 +1902,632 @@ main {
 }
 
 
-/* -------------------------------------------------------------------
-   17. SMALL SCREENS
-   ------------------------------------------------------------------- */
-@media (max-width: 768px) {
-  .hud-top {
+/* =====================================================================
+   17. RESPONSIVE — comprehensive breakpoint system
+   ---------------------------------------------------------------------
+   Strategy:
+     • XL  ≥ 1600px : optional larger gutter + scaling
+     • LG  1280–1599: full HUD with rails (default desktop)
+     • MD  1024–1279: rails hidden, content reclaims space
+     • SM  768–1023 : tablet portrait — compact HUD, single-col modules
+     • XS  480–767  : phone landscape / small tablet — stacked HUD
+     • XXS ≤ 479    : phone portrait — minimal HUD, tight spacing
+   ===================================================================== */
+
+
+/* ---------- BASELINE FIXES that apply everywhere ------------------- */
+
+/* Use dynamic viewport height where supported — fixes URL bar jump on iOS/Android */
+@supports (height: 100dvh) {
+
+  .hero,
+  .module {
+    min-height: 100dvh;
+  }
+
+  .toolkit__sticky {
+    height: 100dvh;
+  }
+
+  .boot {
+    height: 100dvh;
+  }
+}
+
+/* Touch targets — apply on coarse pointers (touch) */
+@media (pointer: coarse) {
+
+  .hud-top__nav a,
+  .comm-card,
+  .chips li,
+  .cta,
+  .k-term__close,
+  .node-card__close,
+  .nc-link {
+    min-height: 44px;
+  }
+
+  .hud-top__nav a {
+    padding: 0.65rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+
+/* =====================================================================
+   XL — ≥1600px : extra room — let content breathe slightly more
+   ===================================================================== */
+@media (min-width: 1600px) {
+  :root {
+    --rail-w: 320px;
+  }
+
+  main {
+    padding: 0 calc(var(--rail-w) + 3rem);
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+
+  .toolkit__rack {
+    gap: 1.5rem;
+  }
+}
+
+
+/* =====================================================================
+   MD — 1024–1279px : tablet landscape / small desktop
+   Rails hidden. Main content reclaims space.
+   ===================================================================== */
+@media (max-width: 1279px) {
+  :root {
+    --hud-h: 64px;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  main {
+    padding: 0 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Node card — center on screen since rail is gone */
+  .node-card {
+    top: 50%;
+    right: 2rem;
+    left: 2rem;
+    width: auto;
+    max-width: 480px;
+    margin: 0 auto;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  .node-card.is-open {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+
+/* =====================================================================
+   SM — 768–1023px : tablet portrait / small landscape
+   Stack module layouts, simplify HUD slightly.
+   ===================================================================== */
+@media (max-width: 1023px) {
+
+  /* Modules: single column, label not sticky */
+  .module__layout,
+  .module__layout--right {
     grid-template-columns: 1fr;
+    grid-template-areas: "label" "primary" "secondary";
+    gap: 1.25rem;
+  }
+
+  .module__label {
+    position: static;
+    /* drop sticky — it confuses layout */
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+
+  .module__label--right {
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+
+  /* Toolkit gallery: drop the pinned horizontal scroll */
+  .toolkit {
     height: auto;
+    margin-top: 4vh;
+  }
+
+  .toolkit__sticky {
+    position: static;
+    height: auto;
+  }
+
+  .toolkit__rack {
+    overflow-x: auto;
+    padding: 0.5rem 0.25rem 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    transform: none !important;
+  }
+
+  .toolkit__rack::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .toolkit__rack::-webkit-scrollbar-thumb {
+    background: var(--cyan-faint);
+    border-radius: 2px;
+  }
+
+  .tool {
+    scroll-snap-align: start;
+    flex: 0 0 min(360px, 75vw);
+    height: auto;
+    min-height: 360px;
+  }
+
+  /* Hero: stack terminal under identity */
+  .hero__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+
+/* =====================================================================
+   XS — 480–767px : large phones / phablets
+   Stack HUD top/bottom. Hide ticker. Tighten everything.
+   ===================================================================== */
+@media (max-width: 767px) {
+  :root {
+    --hud-h: 110px;
+    /* HUD stacks taller — bump variable so calcs stay correct */
+    --foot-h: 38px;
+  }
+
+  /* Top HUD: stack, simplify, hide low-priority items */
+  .hud-top {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-areas: "left" "nav" "right";
     padding: 0.75rem 1rem;
-    gap: 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .hud-top__left {
+    grid-area: left;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .hud-top__nav {
+    grid-area: nav;
+    justify-self: stretch;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.5rem 1rem;
     font-size: 0.6rem;
+    justify-content: flex-start;
   }
 
   .hud-top__right {
-    justify-self: start;
+    grid-area: right;
+    justify-self: stretch;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
+  .hud-top__nav a {
+    padding: 0.4rem 0.4rem;
+  }
+
+  .brand__sub {
+    display: none;
+  }
+
+  /* "// node_07" — drop on phones */
   .status-strip {
     font-size: 0.6rem;
+    gap: 0.4rem;
   }
 
+  .geo {
+    display: none;
+  }
+
+  /* coordinates redundant on small screens */
+
+  /* Bottom HUD: progress only, no ticker */
   .hud-bottom {
     grid-template-columns: 1fr;
-    height: auto;
+    height: var(--foot-h);
   }
 
   .ticker {
     display: none;
   }
 
+  .progress {
+    padding: 0 1rem;
+    font-size: 0.62rem;
+    gap: 0.5rem;
+  }
+
+  /* Main content padding tightens */
   main {
     padding: 0 1rem;
   }
 
+  /* Hero: smaller name, looser stack */
+  .hero {
+    padding: calc(var(--hud-h) + 1.5rem) 0 calc(var(--foot-h) + 1.5rem);
+  }
+
+  .hero__name {
+    font-size: clamp(2rem, 11vw, 3.5rem);
+    margin-bottom: 0.85rem;
+  }
+
+  .hero__role {
+    font-size: 0.78rem;
+  }
+
+  .hero__role i {
+    margin: 0 0.2rem;
+  }
+
+  .hero__intro {
+    font-size: 0.85rem;
+  }
+
+  .terminal__body {
+    font-size: 0.7rem;
+    min-height: 9rem;
+    padding: 1rem;
+  }
+
+  .terminal__title {
+    font-size: 0.62rem;
+  }
+
+  /* Stat strip: 2x2 grid */
+  .stat-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat {
+    padding: 0.85rem 0.9rem;
+  }
+
+  .stat__num {
+    font-size: 1.4rem;
+  }
+
+  .stat__lbl {
+    font-size: 0.55rem;
+  }
+
+  /* Hero cue: shrink */
+  .hero__cue {
+    font-size: 0.55rem;
+    gap: 0.5rem;
+  }
+
+  /* Modules: tighter padding */
+  .module {
+    padding: 4vh 0;
+    min-height: auto;
+    /* don't force full viewport height on phones — content matters more */
+  }
+
+  .module__title {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+
+  .module__index {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+  }
+
+  /* Panels: tighter padding, smaller chips */
+  .panel {
+    padding: 1.25rem 1.1rem 1.4rem;
+  }
+
+  .panel__head {
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .panel__tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+  }
+
+  .panel__id {
+    font-size: 0.58rem;
+  }
+
+  .panel__body {
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .chips {
+    gap: 0.3rem;
+  }
+
+  .chips li {
+    font-size: 0.62rem;
+    padding: 0.4rem 0.55rem;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .certs {
+    font-size: 0.68rem;
+  }
+
+  .cta {
+    min-width: 0;
+    width: 100%;
+    padding: 0.95rem 1rem;
+    font-size: 0.72rem;
+  }
+
+  /* Comms cards: single column on small phones */
+  .comms__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comm-card {
+    padding: 1.1rem 1.1rem 1rem;
+  }
+
+  .comm-card__val {
+    font-size: 0.82rem;
+    padding-right: 2.5rem;
+  }
+
+  .comms__foot {
+    font-size: 0.58rem;
+    gap: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Konami terminal */
+  .k-term {
+    width: 95vw;
+    max-height: 85vh;
+  }
+
+  .k-term__head {
+    padding: 0.6rem 0.75rem;
+  }
+
   .k-term__title {
     display: none;
+  }
+
+  .k-term__body {
+    padding: 0.85rem 0.85rem 0.5rem;
+    font-size: 0.72rem;
+    min-height: 200px;
+    max-height: 50vh;
+  }
+
+  .k-term__input-row {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .k-term__input {
+    font-size: 0.78rem;
+  }
+
+  /* Node card: full width on phones */
+  .node-card {
+    right: 0.75rem;
+    left: 0.75rem;
+    max-width: none;
+    top: auto;
+    bottom: 4rem;
+    transform: translateY(20px);
+  }
+
+  .node-card.is-open {
+    transform: translateY(0);
+    top: auto;
+  }
+
+  .node-card__title {
+    font-size: 1.3rem;
+  }
+
+  .node-card__body {
+    font-size: 0.82rem;
+  }
+
+  /* Boot overlay */
+  .boot__inner {
+    width: 92vw;
+  }
+
+  .boot__logo {
+    font-size: 1rem;
+    letter-spacing: 0.22em;
+  }
+
+  .boot__log {
+    font-size: 0.65rem;
+    min-height: 8.5rem;
+  }
+
+  .boot__hint {
+    font-size: 0.58rem;
+  }
+
+  /* Explorer panel — tighten */
+  .panel--explorer {
+    padding: 1rem 1rem 0.85rem;
+  }
+
+  .explorer__hint {
+    font-size: 0.55rem;
+    bottom: 0.45rem;
+  }
+
+  /* Toolkit cards: tighter padding */
+  .tool {
+    padding: 1.4rem 1.25rem;
+    min-height: 320px;
+  }
+
+  .tool h4 {
+    font-size: 1.95rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .tool p {
+    font-size: 0.82rem;
+  }
+
+  .toolkit__title {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .toolkit__hint {
+    font-size: 0.62rem;
+  }
+}
+
+
+/* =====================================================================
+   XXS — ≤479px : small phones in portrait
+   Aggressive trimming. Single-priority experience.
+   ===================================================================== */
+@media (max-width: 479px) {
+  :root {
+    --hud-h: 100px;
+  }
+
+  /* Drop secondary HUD items entirely */
+  .status-strip {
+    display: none;
+  }
+
+  /* SOC ONLINE / SIEM ACTIVE / OSINT FEED */
+  .clock:first-child {
+    display: none;
+  }
+
+  /* keep only Athens time */
+
+  .hud-top__nav {
+    gap: 0.4rem 0.85rem;
+    font-size: 0.55rem;
+  }
+
+  .hud-top__nav a em {
+    font-size: 0.55rem;
+  }
+
+  .brand__name {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+  }
+
+  /* Hero name very tight on the smallest screens */
+  .hero__name {
+    font-size: clamp(1.85rem, 11vw, 2.6rem);
+    line-height: 1;
+  }
+
+  .hero__given,
+  .hero__family {
+    display: block;
+  }
+
+  /* Hero meta tags: smaller */
+  .tag {
+    font-size: 0.55rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  /* Stat strip: 2 columns kept, very compact */
+  .stat__num {
+    font-size: 1.2rem;
+  }
+
+  .stat__lbl {
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+  }
+
+  /* Module titles a touch smaller */
+  .module__title {
+    font-size: clamp(1.55rem, 9vw, 2.2rem);
+  }
+
+  /* Panel scan-line is expensive on low-end phones — drop it */
+  .panel__scan {
+    display: none;
+  }
+
+  /* Boot bar: simpler */
+  .boot__logo {
+    font-size: 0.9rem;
+  }
+
+  .boot__log {
+    font-size: 0.6rem;
+    line-height: 1.5;
+    min-height: 7.5rem;
+  }
+}
+
+
+/* =====================================================================
+   LANDSCAPE PHONES — short height — drop hero forced height
+   ===================================================================== */
+@media (max-height: 540px) and (orientation: landscape) and (max-width: 1023px) {
+
+  .hero,
+  .module {
+    min-height: auto;
+    padding-top: calc(var(--hud-h) + 1rem);
+    padding-bottom: calc(var(--foot-h) + 1rem);
+  }
+
+  .terminal__body {
+    min-height: 6rem;
+  }
+}
+
+
+/* =====================================================================
+   REDUCED MOTION — respect user preference
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .panel__scan,
+  .cue__line::after,
+  .ticker__inner,
+  .radar__sweep {
+    animation: none !important;
   }
 }
