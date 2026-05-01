@@ -88,6 +88,35 @@
 
 
   <!-- ============================================================== -->
+  <!-- ✦ NEW: EXPLORER ITEM MODAL                                      -->
+  <!-- Pops in when a user taps a node on the OSINT graph              -->
+  <!-- ============================================================== -->
+  <div class="exp-modal" id="exp-modal" aria-hidden="true">
+    <div class="panel">
+      <div class="panel__corner panel__corner--tl"></div>
+      <div class="panel__corner panel__corner--tr"></div>
+      <div class="panel__corner panel__corner--bl"></div>
+      <div class="panel__corner panel__corner--br"></div>
+      <div class="panel__scan"></div>
+
+      <header class="panel__head">
+        <span class="panel__tag" id="exp-type">CERTIFICATION</span>
+        <button class="exp-modal__close" id="exp-close" aria-label="Close">✕</button>
+      </header>
+
+      <h3 class="exp-modal__title" id="exp-title">—</h3>
+      <p class="exp-modal__meta" id="exp-meta">—</p>
+      <p class="exp-modal__body" id="exp-body">—</p>
+
+      <a class="cta exp-modal__cta" id="exp-link" href="#" target="_blank" rel="noopener">
+        <span id="exp-link-label">→ Open</span>
+        <span class="cta__rune">↗</span>
+      </a>
+    </div>
+  </div>
+
+
+  <!-- ============================================================== -->
   <!-- THREE.JS CANVAS                                                 -->
   <!-- ============================================================== -->
   <canvas id="bg-canvas"></canvas>
@@ -390,7 +419,12 @@
           </header>
           <div class="explorer">
             <canvas id="explorer-canvas"></canvas>
-            <span class="explorer__hint">↻ DRAG TO ROTATE</span>
+            <div class="explorer__legend" aria-hidden="true">
+              <span><i style="background:var(--cyan)"></i>Cert</span>
+              <span><i style="background:var(--green)"></i>Work</span>
+              <span><i style="background:var(--amber)"></i>Edu</span>
+            </div>
+            <span class="explorer__hint">↻ DRAG TO ROTATE · TAP A NODE</span>
           </div>
         </article>
       </div>
