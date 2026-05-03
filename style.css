@@ -475,6 +475,167 @@ button {
 
 
 /* -------------------------------------------------------------------
+   6b. ✦ EXPLORER ITEM MODAL — pops up when a graph node is tapped
+   ------------------------------------------------------------------- */
+.exp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 6, 15, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .35s var(--ease), visibility .35s var(--ease);
+  padding: 1rem;
+}
+
+.exp-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.exp-modal .panel {
+  width: min(460px, 92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(20px) scale(0.96);
+  transition: transform .4s var(--ease);
+}
+
+.exp-modal.is-open .panel {
+  transform: translateY(0) scale(1);
+}
+
+.exp-modal__close {
+  font-size: 0.95rem;
+  color: var(--white-faint);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  transition: all .2s;
+}
+
+.exp-modal__close:hover {
+  color: var(--red);
+  background: rgba(255, 77, 109, 0.1);
+}
+
+.exp-modal__title {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.55rem;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+.exp-modal__meta {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--cyan);
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed var(--glass-border);
+}
+
+.exp-modal__meta b {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.exp-modal__body {
+  font-size: 0.9rem;
+  color: var(--white-soft);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.exp-modal__cta {
+  min-width: unset;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Type-specific accent colours on tag + corners + scan */
+.exp-modal[data-type="cert"] .panel__tag {
+  color: var(--cyan);
+}
+
+.exp-modal[data-type="cert"] .panel__corner {
+  border-color: var(--cyan);
+}
+
+.exp-modal[data-type="cert"] .exp-modal__meta b {
+  color: var(--cyan);
+}
+
+.exp-modal[data-type="work"] .panel__tag {
+  color: var(--green);
+}
+
+.exp-modal[data-type="work"] .panel__corner {
+  border-color: var(--green);
+}
+
+.exp-modal[data-type="work"] .exp-modal__meta b {
+  color: var(--green);
+}
+
+.exp-modal[data-type="edu"] .panel__tag {
+  color: var(--amber);
+}
+
+.exp-modal[data-type="edu"] .panel__corner {
+  border-color: var(--amber);
+}
+
+.exp-modal[data-type="edu"] .exp-modal__meta b {
+  color: var(--amber);
+}
+
+
+/* Explorer legend overlay (top-left of the canvas) */
+.explorer__legend {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--white-soft);
+  text-transform: uppercase;
+  pointer-events: none;
+  text-shadow: 0 0 6px rgba(3, 6, 15, 0.85);
+}
+
+.explorer__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.explorer__legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px currentColor;
+}
+
+
+/* -------------------------------------------------------------------
    7. TOP HUD
    ------------------------------------------------------------------- */
 .hud-top {
@@ -755,6 +916,11 @@ button {
 
 .rail__feed li.is-block b {
   color: var(--green);
+}
+
+.rail__feed li .feed-ip {
+  color: var(--cyan);
+  font-style: normal;
 }
 
 @keyframes feed-in {

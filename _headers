@@ -1,0 +1,47 @@
+# Netlify HTTP headers configuration
+# Reference: https://docs.netlify.com/routing/headers/
+#
+# These headers are sent on every response and provide strong security
+# defenses that <meta> tags cannot match (e.g. X-Frame-Options, HSTS,
+# Permissions-Policy can ONLY be set as real HTTP headers).
+
+/*
+  # Force browsers to use HTTPS for one year (and include subdomains).
+  # The "preload" directive opts you into the browser preload list once
+  # you submit at https://hstspreload.org/ — recommended after a few
+  # weeks of stable HTTPS.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Stops the page from being embedded inside an <iframe> on another
+  # domain — defends against clickjacking attacks.
+  X-Frame-Options: DENY
+
+  # Tells browsers not to MIME-sniff content types away from what the
+  # server declared. Defends against type-confusion attacks.
+  X-Content-Type-Options: nosniff
+
+  # Limits how much referrer info is leaked when users click outbound
+  # links. "strict-origin-when-cross-origin" sends the full URL
+  # same-origin, only the origin cross-origin, and nothing on downgrade.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Disable powerful browser APIs we don't use. Reduces attack surface
+  # if a script is ever compromised.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()
+
+  # Content Security Policy — the same one declared in <meta> in the
+  # HTML, but as a real HTTP header so browsers enforce it before any
+  # HTML is even parsed.
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
+
+  # Cross-Origin headers — defend against side-channel attacks.
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+# Long cache for static assets (Netlify already does this, but explicit is better)
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable

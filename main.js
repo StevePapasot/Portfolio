@@ -73,8 +73,9 @@ const kInput = document.getElementById('k-input');
 const FS = {
   'id.txt': [
     'UID:      stavros.papasotiropoulos',
-    'ROLE:     soc_l1_analyst',
-    'EMPLOYER: adacom',
+    'ROLE:     field_electrical_engineer',
+    'EMPLOYER: kourtis_tech',
+    'PRIOR:    soc_l1_analyst @ adacom (2025 - 04/2026)',
     'GROUPS:   engineers, investigators, educators',
     'LOCATION: Athens, Greece',
   ],
@@ -125,7 +126,7 @@ const COMMANDS = {
 
   whoami: () => [
     { cls: 'k-line--ok', txt: 'stavros.papasotiropoulos' },
-    { cls: 'k-line--out', txt: 'SOC L1 Analyst · OSINT Investigator · Engineer · Educator' },
+    { cls: 'k-line--out', txt: 'Field Electrical Engineer · Cybersecurity Analyst · OSINT Investigator · Educator' },
     { cls: 'k-line--out', txt: 'Athens, Greece  [37.9838°N, 23.7275°E]' },
     { cls: 'k-line--blank', txt: '' },
   ],
@@ -297,6 +298,14 @@ kOverlay && kOverlay.addEventListener('click', (e) => {
    ===================================================================== */
 const PROJECT_NODES = [
   {
+    label: 'CURRENT ROLE',
+    title: 'Kourtis Tech — Field Engineer',
+    body: 'Field Electrical Engineer at Kourtis Tech, Athens (May 2026 – Present). On-site electrical engineering, installation and commissioning across diverse projects. Technical planning, equipment verification and systems integration.',
+    chips: ['Electrical', 'Installation', 'Commissioning', 'Field Work'],
+    link: 'https://kourtistech.gr/',
+    linkLabel: '→ kourtistech.gr',
+  },
+  {
     label: 'DEPLOYMENT',
     title: 'Wazuh SOC Lab',
     body: 'Home-built Security Operations Center on Linux. Endpoints log to Wazuh SIEM; custom detection rules, alert triage, brute-force and PowerShell investigation. Simulated enterprise threat environment.',
@@ -322,9 +331,9 @@ const PROJECT_NODES = [
   },
   {
     label: 'EMPLOYMENT',
-    title: 'Adacom SOC',
-    body: 'SOC L1 Analyst at Adacom (2025–present). Daily triage of security alerts, playbook execution, client advisory on containment actions. Real-world threat detection.',
-    chips: ['SOC', 'Alert Triage', 'Playbooks', 'Client Advisory'],
+    title: 'Adacom — SOC L1 Analyst',
+    body: 'SOC L1 Analyst at Adacom (2025 – April 2026). Daily monitoring of client systems, triage of security alerts, identification of incident type and severity, and execution of playbooks. Suggested practical containment steps to security teams and system owners.',
+    chips: ['SOC', 'Alert Triage', 'Playbooks', 'Containment'],
     link: 'https://www.linkedin.com/in/stavros-papasotiropoulos-b35302200/',
     linkLabel: '→ LinkedIn Profile',
   },
@@ -346,8 +355,8 @@ const PROJECT_NODES = [
   },
   {
     label: 'EMPLOYMENT',
-    title: 'CoreConcepts — Web Dev',
-    body: 'Web Developer at CoreConcepts, Athens (2023). Designed and built dynamic, responsive WordPress sites for a diverse client base. Deep UX focus and client-satisfaction driven delivery.',
+    title: 'Core Concepts — Web Dev',
+    body: 'Web Developer at Core Concepts, Athens (2023). Designed and built dynamic, responsive WordPress sites for a diverse client base. Deep UX focus and client-satisfaction driven delivery.',
     chips: ['WordPress', 'Web Dev', 'UX Design', 'Responsive Design'],
     link: 'https://www.linkedin.com/in/stavros-papasotiropoulos-b35302200/',
     linkLabel: '→ LinkedIn Profile',
@@ -899,7 +908,27 @@ function pushFeedItem() {
   const tpl = FEED_TEMPLATES[Math.floor(Math.random() * FEED_TEMPLATES.length)];
   const li = document.createElement('li');
   li.className = `is-${tpl.kind}`;
-  li.innerHTML = `<time>${new Date().toLocaleTimeString('en-GB', { hour12: false })}</time><span><b>${tpl.kind.toUpperCase()}</b> · ${tpl.txt}${tpl.ip ? ` · <em style="color:var(--cyan)">${randomIP()}</em>` : ''}</span>`;
+
+  // Build using DOM API + textContent (XSS-safe, no string interpolation into HTML)
+  const time = document.createElement('time');
+  time.textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
+
+  const span = document.createElement('span');
+  const kindB = document.createElement('b');
+  kindB.textContent = tpl.kind.toUpperCase();
+  span.appendChild(kindB);
+  span.appendChild(document.createTextNode(' · ' + tpl.txt));
+
+  if (tpl.ip) {
+    span.appendChild(document.createTextNode(' · '));
+    const em = document.createElement('em');
+    em.className = 'feed-ip';   // styled in CSS, no inline style
+    em.textContent = randomIP();
+    span.appendChild(em);
+  }
+
+  li.appendChild(time);
+  li.appendChild(span);
   feedEl.prepend(li);
   while (feedEl.children.length > FEED_MAX) feedEl.removeChild(feedEl.lastChild);
 }
@@ -926,8 +955,8 @@ const heroLines = [
   { type: 'cmd', text: '$ whoami' },
   { type: 'out', text: '> stavros.papasotiropoulos' },
   { type: 'cmd', text: '$ id' },
-  { type: 'out', text: '> uid=1000 role=soc_l1_analyst' },
-  { type: 'out', text: '> groups=engineers,osint,educators' },
+  { type: 'out', text: '> uid=1000 role=field_electrical_engineer' },
+  { type: 'out', text: '> groups=engineers,cyber,educators' },
   { type: 'cmd', text: '$ ls /projects' },
   { type: 'out', text: '> wazuh-soc  eduplatform  ecppt-lab' },
   { type: 'cmd', text: '$ status' },
@@ -954,39 +983,407 @@ const heroLines = [
   setTimeout(step, 1700);
 })();
 
-// -- DRAG-TO-ROTATE OSINT EXPLORER ----------------------------------
+// -- ✦ INTERACTIVE OSINT EXPLORER -----------------------------------
+// 17 nodes mapping to real CV items. Color-coded by type. Click/tap
+// opens a glass modal. Drag to rotate. Click-vs-drag detection prevents
+// accidental opens while rotating.
+const EXPLORER_ITEMS = [
+  // ── WORK EXPERIENCE (green) ────────────────────────────────────
+  {
+    type: 'work',
+    title: 'Field Electrical Engineer',
+    org: 'Kourtis Tech',
+    period: 'May 2026 – Present',
+    body: 'On-site electrical engineering, installation and commissioning across diverse project types. Technical planning, equipment verification and systems integration.',
+    link: 'https://kourtistech.gr/',
+    linkLabel: '→ kourtistech.gr',
+  },
+  {
+    type: 'work',
+    title: 'SOC L1 Analyst',
+    org: 'Adacom',
+    period: '2025 – April 2026',
+    body: 'Monitored client environments daily for suspicious activity; handled L1 alert triage and executed incident playbooks. Worked closely with security teams and system owners to contain real-world threats.',
+  },
+  {
+    type: 'work',
+    title: 'Back Office Engineer',
+    org: 'Kapa Install',
+    period: 'March – September 2025',
+    body: 'Optimised technician scheduling, managed company website and e-shop infrastructure, and conducted R&D on emerging electrical systems and technologies.',
+  },
+  {
+    type: 'work',
+    title: 'Web Developer',
+    org: 'Core Concepts',
+    period: '2023',
+    body: 'Designed and developed dynamic, responsive WordPress websites for a diverse client base, with a focus on performance, UX and visual quality.',
+  },
+  {
+    type: 'work',
+    title: 'Private Tutor',
+    org: 'Freelance',
+    period: '2021 – 2025',
+    body: 'Taught junior high, high school and tertiary-level students in Electrical Engineering — in person, remotely, and at tutorial centres across Athens.',
+  },
+
+  // ── EDUCATION (amber) ──────────────────────────────────────────
+  {
+    type: 'edu',
+    title: 'BSc — Educational Electrical & Electronic Engineering',
+    org: 'ASPAITE',
+    period: '2018 – 2025',
+    body: 'Foundations in circuit design, digital and analog systems, embedded systems, telecommunications and network fundamentals. Strong analytical, troubleshooting and technical-documentation skills.',
+  },
+
+  // ── CERTIFICATIONS (cyan) ──────────────────────────────────────
+  {
+    type: 'cert',
+    title: 'SOC Analyst L1 (SAL1)',
+    org: 'TryHackMe',
+    period: '2025 – 2028',
+    body: 'Blue-team SOC operations: SIEM, log analysis, threat detection, incident response and triage workflows.',
+  },
+  {
+    type: 'cert',
+    title: 'eCPPT — Certified Pen. Tester',
+    org: 'INE',
+    period: '2025 – 2028',
+    body: 'Advanced exploitation, Active Directory attacks, pivoting, post-exploitation and professional report writing.',
+  },
+  {
+    type: 'cert',
+    title: 'Jr Penetration Tester',
+    org: 'TryHackMe',
+    period: '2024',
+    body: 'Foundational offensive security: enumeration, exploitation, privilege escalation and methodology.',
+  },
+  {
+    type: 'cert',
+    title: 'Complete Ethical Hacking Bootcamp',
+    org: 'Udemy',
+    period: '2024',
+    body: 'Hands-on coverage of ethical hacking methodology, tools and techniques across the full kill chain.',
+  },
+  {
+    type: 'cert',
+    title: 'The Complete JavaScript Course',
+    org: 'Udemy',
+    period: '2024',
+    body: 'Modern JavaScript: ES6+, asynchronous patterns, OOP, functional programming and tooling.',
+  },
+  {
+    type: 'cert',
+    title: 'Meta Front-End Developer',
+    org: 'Meta',
+    period: '2023',
+    body: 'React, modern front-end engineering, accessibility, version control and component architecture.',
+  },
+  {
+    type: 'cert',
+    title: 'Google IT Support Professional',
+    org: 'Google',
+    period: '2023',
+    body: 'IT fundamentals: networking, operating systems, system administration and security basics.',
+  },
+  {
+    type: 'cert',
+    title: 'Ultimate Electrical Design',
+    org: 'Udemy',
+    period: '2023',
+    body: 'Industrial and residential electrical design, calculations and CAD-based design workflows.',
+  },
+  {
+    type: 'cert',
+    title: 'Energy Production, Distribution & Safety',
+    org: 'Univ. of Buffalo',
+    period: '2023',
+    body: 'Power generation, transmission, distribution and safety frameworks for modern grids.',
+  },
+  {
+    type: 'cert',
+    title: 'Google UX Design',
+    org: 'Google',
+    period: '2022',
+    body: 'User research, wireframing, prototyping and usability testing across the full UX lifecycle.',
+  },
+  {
+    type: 'cert',
+    title: 'Responsive Web Design',
+    org: 'freeCodeCamp',
+    period: '2022',
+    body: 'HTML/CSS fundamentals, accessibility patterns and responsive layout techniques.',
+  },
+];
+
+
+// ── Modal helpers (defined outside initExplorer so they can be reused)
+const expModal = document.getElementById('exp-modal');
+const expClose = document.getElementById('exp-close');
+const expType = document.getElementById('exp-type');
+const expTitle = document.getElementById('exp-title');
+const expMeta = document.getElementById('exp-meta');
+const expBody = document.getElementById('exp-body');
+const expLink = document.getElementById('exp-link');
+const expLinkLabel = document.getElementById('exp-link-label');
+
+const TYPE_LABELS = {
+  cert: 'CERTIFICATION',
+  work: 'WORK EXPERIENCE',
+  edu: 'EDUCATION',
+};
+
+function openExpModal(item) {
+  if (!expModal || !item) return;
+  expType.textContent = TYPE_LABELS[item.type] || 'ITEM';
+  expTitle.textContent = item.title;
+
+  // Build meta line with DOM API (XSS-safe — no string interpolation into HTML)
+  expMeta.replaceChildren();
+  const orgB = document.createElement('b');
+  orgB.textContent = item.org;
+  expMeta.appendChild(orgB);
+  expMeta.appendChild(document.createTextNode('  ·  ' + item.period));
+
+  expBody.textContent = item.body;
+
+  if (item.link) {
+    expLink.href = item.link;
+    expLinkLabel.textContent = item.linkLabel || '→ Open';
+    expLink.style.display = '';
+  } else {
+    expLink.style.display = 'none';
+  }
+  expModal.dataset.type = item.type;
+  expModal.classList.add('is-open');
+  expModal.setAttribute('aria-hidden', 'false');
+}
+
+function closeExpModal() {
+  if (!expModal) return;
+  expModal.classList.remove('is-open');
+  expModal.setAttribute('aria-hidden', 'true');
+}
+
+if (expClose) expClose.addEventListener('click', closeExpModal);
+if (expModal) expModal.addEventListener('click', (e) => {
+  if (e.target === expModal) closeExpModal();
+});
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && expModal && expModal.classList.contains('is-open')) {
+    closeExpModal();
+  }
+});
+
+
 (function initExplorer() {
   const exCanvas = document.getElementById('explorer-canvas');
   if (!exCanvas) return;
+
   const exScene = new THREE.Scene();
-  const exCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-  exCamera.position.set(0, 0, 6);
-  const exRenderer = new THREE.WebGLRenderer({ canvas: exCanvas, antialias: true, alpha: true });
-  exRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  function size() { const w = exCanvas.clientWidth, h = exCanvas.clientHeight; exRenderer.setSize(w, h, false); exCamera.aspect = w / h; exCamera.updateProjectionMatrix(); }
-  size(); window.addEventListener('resize', size);
-  exScene.add(new THREE.AmbientLight(0xffffff, 0.6));
-  const exLight = new THREE.PointLight(0x00e5ff, 1.5, 20); exLight.position.set(3, 3, 3); exScene.add(exLight);
-  const exGroup = new THREE.Group(); exScene.add(exGroup);
-  const sGeo = new THREE.IcosahedronGeometry(2.4, 2);
-  exGroup.add(new THREE.Mesh(sGeo, new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.35 })));
-  const verts = sGeo.attributes.position, used = new Set();
-  const nGeo = new THREE.IcosahedronGeometry(0.07, 0), mA = new THREE.MeshBasicMaterial({ color: 0x00e5ff }), mB = new THREE.MeshBasicMaterial({ color: 0x5fff9f });
-  for (let i = 0; i < verts.count; i += 3) {
-    const x = verts.getX(i), y = verts.getY(i), z = verts.getZ(i);
-    const key = `${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)}`;
-    if (used.has(key)) continue; used.add(key);
-    const n = new THREE.Mesh(nGeo, Math.random() < 0.7 ? mA : mB); n.position.set(x, y, z); exGroup.add(n);
+  const exCamera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+  exCamera.position.set(0, 0, 7);
+
+  const exRenderer = new THREE.WebGLRenderer({
+    canvas: exCanvas,
+    antialias: !IS_MOBILE,
+    alpha: true,
+  });
+  exRenderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 1.5 : 2));
+
+  function size() {
+    const w = exCanvas.clientWidth;
+    const h = exCanvas.clientHeight;
+    exRenderer.setSize(w, h, false);
+    exCamera.aspect = w / h;
+    exCamera.updateProjectionMatrix();
   }
-  exGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), new THREE.MeshBasicMaterial({ color: 0xf4faff })));
-  let dragging = false, lx = 0, ly = 0, vx = 0, vy = 0;
-  exCanvas.addEventListener('mousedown', e => { dragging = true; lx = e.clientX; ly = e.clientY; vx = vy = 0; });
-  exCanvas.addEventListener('touchstart', e => { dragging = true; lx = e.touches[0].clientX; ly = e.touches[0].clientY; vx = vy = 0; }, { passive: false });
-  window.addEventListener('mousemove', e => { if (!dragging) return; vx = (e.clientX - lx) * 0.01; vy = (e.clientY - ly) * 0.01; exGroup.rotation.y += vx; exGroup.rotation.x += vy; lx = e.clientX; ly = e.clientY; });
-  window.addEventListener('touchmove', e => { if (!dragging) return; vx = (e.touches[0].clientX - lx) * 0.01; vy = (e.touches[0].clientY - ly) * 0.01; exGroup.rotation.y += vx; exGroup.rotation.x += vy; lx = e.touches[0].clientX; ly = e.touches[0].clientY; e.preventDefault(); }, { passive: false });
-  window.addEventListener('mouseup', () => dragging = false);
-  window.addEventListener('touchend', () => dragging = false);
-  (function exTick() { if (!dragging) { exGroup.rotation.y += 0.003 + vx; exGroup.rotation.x += vy; vx *= 0.94; vy *= 0.94; } exRenderer.render(exScene, exCamera); requestAnimationFrame(exTick); })();
+  size();
+  window.addEventListener('resize', size);
+
+  // Lights
+  exScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const exLight = new THREE.PointLight(0x00e5ff, 1.6, 25);
+  exLight.position.set(3, 3, 3);
+  exScene.add(exLight);
+  const exLight2 = new THREE.PointLight(0x5fff9f, 0.9, 25);
+  exLight2.position.set(-3, -3, 2);
+  exScene.add(exLight2);
+
+  const exGroup = new THREE.Group();
+  exScene.add(exGroup);
+
+  // Skeleton wireframe sphere (decorative)
+  const skeleton = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(2.6, 2),
+    new THREE.MeshBasicMaterial({
+      color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.16,
+    })
+  );
+  exGroup.add(skeleton);
+
+  // Materials per type
+  const TYPE_COLOR = {
+    cert: 0x00e5ff,
+    work: 0x5fff9f,
+    edu: 0xffb84d,
+  };
+
+  function makeNodeMat(hex) {
+    return new THREE.MeshStandardMaterial({
+      color: hex,
+      emissive: hex,
+      emissiveIntensity: 1.6,
+      roughness: 0.2,
+      metalness: 0.7,
+    });
+  }
+
+  // Fibonacci sphere — gives even point spread on the sphere
+  function fibSphere(n, r) {
+    const pts = [];
+    const phi = Math.PI * (3 - Math.sqrt(5)); // golden angle
+    for (let i = 0; i < n; i++) {
+      const y = 1 - (i / (n - 1)) * 2;
+      const ringR = Math.sqrt(1 - y * y);
+      const theta = phi * i;
+      pts.push({
+        x: Math.cos(theta) * ringR * r,
+        y: y * r,
+        z: Math.sin(theta) * ringR * r,
+      });
+    }
+    return pts;
+  }
+
+  const positions = fibSphere(EXPLORER_ITEMS.length, 2.7);
+  const itemNodes = []; // raycaster targets
+  const nodeGeo = new THREE.IcosahedronGeometry(0.18, 0);
+
+  EXPLORER_ITEMS.forEach((item, i) => {
+    const mat = makeNodeMat(TYPE_COLOR[item.type] || 0xffffff);
+    const node = new THREE.Mesh(nodeGeo, mat);
+    const p = positions[i];
+    node.position.set(p.x, p.y, p.z);
+    node.userData = { item, baseEmissive: 1.6 };
+    exGroup.add(node);
+    itemNodes.push(node);
+  });
+
+  // Center sigil
+  const center = new THREE.Mesh(
+    new THREE.SphereGeometry(0.22, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xf4faff })
+  );
+  exGroup.add(center);
+
+  // ── Drag + click-vs-drag detection ─────────────────────────────
+  let isDragging = false;
+  let lx = 0, ly = 0, vx = 0, vy = 0;
+  let downX = 0, downY = 0, didMove = false;
+  const CLICK_THRESHOLD = 6; // px
+
+  // Raycaster for hit-testing
+  const raycaster = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  let hovered = null;
+
+  function getNDCFromEvent(ev) {
+    const rect = exCanvas.getBoundingClientRect();
+    const e = ev.touches ? (ev.touches[0] || ev.changedTouches[0]) : ev;
+    ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    return e;
+  }
+
+  function castRay(ev) {
+    getNDCFromEvent(ev);
+    raycaster.setFromCamera(ndc, exCamera);
+    return raycaster.intersectObjects(itemNodes, false);
+  }
+
+  // Hover state — desktop only
+  exCanvas.addEventListener('mousemove', (ev) => {
+    if (isDragging) return;
+    const hits = castRay(ev);
+    const newHover = hits.length ? hits[0].object : null;
+
+    if (newHover !== hovered) {
+      if (hovered) {
+        hovered.scale.set(1, 1, 1);
+        hovered.material.emissiveIntensity = hovered.userData.baseEmissive;
+      }
+      hovered = newHover;
+      if (hovered) {
+        hovered.scale.set(1.5, 1.5, 1.5);
+        hovered.material.emissiveIntensity = 3.5;
+      }
+      exCanvas.style.cursor = hovered ? 'pointer' : 'grab';
+    }
+  });
+
+  // Begin drag (mouse + touch)
+  function beginDrag(ev) {
+    isDragging = true;
+    didMove = false;
+    const e = ev.touches ? ev.touches[0] : ev;
+    lx = e.clientX; ly = e.clientY;
+    downX = e.clientX; downY = e.clientY;
+    vx = vy = 0;
+  }
+  exCanvas.addEventListener('mousedown', beginDrag);
+  exCanvas.addEventListener('touchstart', beginDrag, { passive: true });
+
+  // Move during drag
+  function onMove(ev, isTouch) {
+    if (!isDragging) return;
+    const e = isTouch ? ev.touches[0] : ev;
+    if (Math.abs(e.clientX - downX) > CLICK_THRESHOLD ||
+      Math.abs(e.clientY - downY) > CLICK_THRESHOLD) {
+      didMove = true;
+    }
+    vx = (e.clientX - lx) * 0.01;
+    vy = (e.clientY - ly) * 0.01;
+    exGroup.rotation.y += vx;
+    exGroup.rotation.x += vy;
+    lx = e.clientX; ly = e.clientY;
+    if (isTouch) ev.preventDefault();
+  }
+  window.addEventListener('mousemove', (ev) => onMove(ev, false));
+  window.addEventListener('touchmove', (ev) => onMove(ev, true), { passive: false });
+
+  // End drag — if the pointer didn't move, treat it as a click
+  function endDrag(ev) {
+    if (!isDragging) return;
+    isDragging = false;
+    if (!didMove) {
+      const hits = castRay(ev);
+      if (hits.length) openExpModal(hits[0].object.userData.item);
+    }
+  }
+  window.addEventListener('mouseup', endDrag);
+  window.addEventListener('touchend', endDrag);
+
+  // Render loop
+  (function exTick() {
+    if (!isDragging) {
+      exGroup.rotation.y += 0.0035 + vx;
+      exGroup.rotation.x += vy;
+      vx *= 0.94;
+      vy *= 0.94;
+    }
+    // Subtle pulsing on each node for life
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < itemNodes.length; i++) {
+      const n = itemNodes[i];
+      if (n !== hovered) {
+        n.material.emissiveIntensity =
+          n.userData.baseEmissive + Math.sin(t * 1.5 + i) * 0.4;
+      }
+    }
+    exRenderer.render(exScene, exCamera);
+    requestAnimationFrame(exTick);
+  })();
 })();
 
 // -- ENTRY ANIMATIONS -----------------------------------------------
