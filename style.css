@@ -918,6 +918,11 @@ button {
   color: var(--green);
 }
 
+.rail__feed li .feed-ip {
+  color: var(--cyan);
+  font-style: normal;
+}
+
 @keyframes feed-in {
   from {
     opacity: 0;

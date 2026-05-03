@@ -73,8 +73,9 @@ const kInput = document.getElementById('k-input');
 const FS = {
   'id.txt': [
     'UID:      stavros.papasotiropoulos',
-    'ROLE:     soc_l1_analyst',
-    'EMPLOYER: adacom',
+    'ROLE:     field_electrical_engineer',
+    'EMPLOYER: kourtis_tech',
+    'PRIOR:    soc_l1_analyst @ adacom (2025 - 04/2026)',
     'GROUPS:   engineers, investigators, educators',
     'LOCATION: Athens, Greece',
   ],
@@ -125,7 +126,7 @@ const COMMANDS = {
 
   whoami: () => [
     { cls: 'k-line--ok', txt: 'stavros.papasotiropoulos' },
-    { cls: 'k-line--out', txt: 'SOC L1 Analyst · OSINT Investigator · Engineer · Educator' },
+    { cls: 'k-line--out', txt: 'Field Electrical Engineer · Cybersecurity Analyst · OSINT Investigator · Educator' },
     { cls: 'k-line--out', txt: 'Athens, Greece  [37.9838°N, 23.7275°E]' },
     { cls: 'k-line--blank', txt: '' },
   ],
@@ -297,6 +298,14 @@ kOverlay && kOverlay.addEventListener('click', (e) => {
    ===================================================================== */
 const PROJECT_NODES = [
   {
+    label: 'CURRENT ROLE',
+    title: 'Kourtis Tech — Field Engineer',
+    body: 'Field Electrical Engineer at Kourtis Tech, Athens (May 2026 – Present). On-site electrical engineering, installation and commissioning across diverse projects. Technical planning, equipment verification and systems integration.',
+    chips: ['Electrical', 'Installation', 'Commissioning', 'Field Work'],
+    link: 'https://kourtistech.gr/',
+    linkLabel: '→ kourtistech.gr',
+  },
+  {
     label: 'DEPLOYMENT',
     title: 'Wazuh SOC Lab',
     body: 'Home-built Security Operations Center on Linux. Endpoints log to Wazuh SIEM; custom detection rules, alert triage, brute-force and PowerShell investigation. Simulated enterprise threat environment.',
@@ -322,9 +331,9 @@ const PROJECT_NODES = [
   },
   {
     label: 'EMPLOYMENT',
-    title: 'Adacom SOC',
-    body: 'SOC L1 Analyst at Adacom (2025–present). Daily triage of security alerts, playbook execution, client advisory on containment actions. Real-world threat detection.',
-    chips: ['SOC', 'Alert Triage', 'Playbooks', 'Client Advisory'],
+    title: 'Adacom — SOC L1 Analyst',
+    body: 'SOC L1 Analyst at Adacom (2025 – April 2026). Daily monitoring of client systems, triage of security alerts, identification of incident type and severity, and execution of playbooks. Suggested practical containment steps to security teams and system owners.',
+    chips: ['SOC', 'Alert Triage', 'Playbooks', 'Containment'],
     link: 'https://www.linkedin.com/in/stavros-papasotiropoulos-b35302200/',
     linkLabel: '→ LinkedIn Profile',
   },
@@ -346,8 +355,8 @@ const PROJECT_NODES = [
   },
   {
     label: 'EMPLOYMENT',
-    title: 'CoreConcepts — Web Dev',
-    body: 'Web Developer at CoreConcepts, Athens (2023). Designed and built dynamic, responsive WordPress sites for a diverse client base. Deep UX focus and client-satisfaction driven delivery.',
+    title: 'Core Concepts — Web Dev',
+    body: 'Web Developer at Core Concepts, Athens (2023). Designed and built dynamic, responsive WordPress sites for a diverse client base. Deep UX focus and client-satisfaction driven delivery.',
     chips: ['WordPress', 'Web Dev', 'UX Design', 'Responsive Design'],
     link: 'https://www.linkedin.com/in/stavros-papasotiropoulos-b35302200/',
     linkLabel: '→ LinkedIn Profile',
@@ -899,7 +908,27 @@ function pushFeedItem() {
   const tpl = FEED_TEMPLATES[Math.floor(Math.random() * FEED_TEMPLATES.length)];
   const li = document.createElement('li');
   li.className = `is-${tpl.kind}`;
-  li.innerHTML = `<time>${new Date().toLocaleTimeString('en-GB', { hour12: false })}</time><span><b>${tpl.kind.toUpperCase()}</b> · ${tpl.txt}${tpl.ip ? ` · <em style="color:var(--cyan)">${randomIP()}</em>` : ''}</span>`;
+
+  // Build using DOM API + textContent (XSS-safe, no string interpolation into HTML)
+  const time = document.createElement('time');
+  time.textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
+
+  const span = document.createElement('span');
+  const kindB = document.createElement('b');
+  kindB.textContent = tpl.kind.toUpperCase();
+  span.appendChild(kindB);
+  span.appendChild(document.createTextNode(' · ' + tpl.txt));
+
+  if (tpl.ip) {
+    span.appendChild(document.createTextNode(' · '));
+    const em = document.createElement('em');
+    em.className = 'feed-ip';   // styled in CSS, no inline style
+    em.textContent = randomIP();
+    span.appendChild(em);
+  }
+
+  li.appendChild(time);
+  li.appendChild(span);
   feedEl.prepend(li);
   while (feedEl.children.length > FEED_MAX) feedEl.removeChild(feedEl.lastChild);
 }
@@ -926,8 +955,8 @@ const heroLines = [
   { type: 'cmd', text: '$ whoami' },
   { type: 'out', text: '> stavros.papasotiropoulos' },
   { type: 'cmd', text: '$ id' },
-  { type: 'out', text: '> uid=1000 role=soc_l1_analyst' },
-  { type: 'out', text: '> groups=engineers,osint,educators' },
+  { type: 'out', text: '> uid=1000 role=field_electrical_engineer' },
+  { type: 'out', text: '> groups=engineers,cyber,educators' },
   { type: 'cmd', text: '$ ls /projects' },
   { type: 'out', text: '> wazuh-soc  eduplatform  ecppt-lab' },
   { type: 'cmd', text: '$ status' },
@@ -1108,7 +1137,14 @@ function openExpModal(item) {
   if (!expModal || !item) return;
   expType.textContent = TYPE_LABELS[item.type] || 'ITEM';
   expTitle.textContent = item.title;
-  expMeta.innerHTML = `<b>${item.org}</b>  ·  ${item.period}`;
+
+  // Build meta line with DOM API (XSS-safe — no string interpolation into HTML)
+  expMeta.replaceChildren();
+  const orgB = document.createElement('b');
+  orgB.textContent = item.org;
+  expMeta.appendChild(orgB);
+  expMeta.appendChild(document.createTextNode('  ·  ' + item.period));
+
   expBody.textContent = item.body;
 
   if (item.link) {

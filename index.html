@@ -4,14 +4,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── PRIMARY SEO ───────────────────────────────────────────────── -->
+  <title>Stavros Papasotiropoulos — SOC Analyst &amp; Field Electrical Engineer · Athens</title>
   <meta name="description"
-    content="Stavros Papasotiropoulos — SOC Analyst, OSINT Investigator, Electrical Engineer, Educator." />
-  <title>S.PAPASOTIROPOULOS // MISSION CONSOLE v3.0</title>
+    content="Portfolio of Stavros Papasotiropoulos — Field Electrical Engineer at Kourtis Tech, former SOC L1 Analyst at Adacom. eCPPT &amp; SAL1 certified. Based in Athens, Greece." />
+  <meta name="author" content="Stavros Papasotiropoulos" />
+  <meta name="keywords"
+    content="Stavros Papasotiropoulos, SOC Analyst, Cybersecurity, eCPPT, SAL1, Wazuh SIEM, Electrical Engineer, OSINT, Athens, Greece, Kourtis Tech, Adacom" />
+  <link rel="canonical" href="https://spapasotiropoulos.com/" />
+  <meta name="theme-color" content="#03060f" />
+  <meta name="color-scheme" content="dark" />
 
-  <!-- ✦ FAVICON — cyan hexagon SVG matching the brand sigil -->
+  <!-- ── OPEN GRAPH / FACEBOOK / LINKEDIN ──────────────────────────── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://spapasotiropoulos.com/" />
+  <meta property="og:title" content="Stavros Papasotiropoulos — Cybersecurity &amp; Electrical Engineering Portfolio" />
+  <meta property="og:description"
+    content="Mission console portfolio. SOC L1 Analyst, eCPPT certified, Field Electrical Engineer based in Athens, Greece." />
+  <meta property="og:image" content="https://spapasotiropoulos.com/og-image.png" />
+  <meta property="og:image:alt" content="Stavros Papasotiropoulos — Mission Console portfolio" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="Stavros Papasotiropoulos" />
+
+  <!-- ── TWITTER / X ───────────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Stavros Papasotiropoulos — Cybersecurity Portfolio" />
+  <meta name="twitter:description"
+    content="SOC L1 Analyst, eCPPT certified, Field Electrical Engineer. Athens, Greece." />
+  <meta name="twitter:image" content="https://spapasotiropoulos.com/og-image.png" />
+
+  <!-- ── SECURITY HEADERS (defence-in-depth via meta) ──────────────── -->
+  <!--
+    These complement (not replace) HTTP headers configured in netlify.toml.
+    Content-Security-Policy: locks down where scripts/styles can come from.
+    Referrer-Policy: limits leakage when users click outbound links.
+    X-Content-Type-Options: blocks MIME-type sniffing.
+  -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+  <!-- ── FAVICON ───────────────────────────────────────────────────── -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
 
-  <!-- Typography -->
+  <!-- ── TYPOGRAPHY ────────────────────────────────────────────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -19,6 +58,52 @@
     rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css" />
+
+  <!-- ── JSON-LD STRUCTURED DATA — helps Google build a knowledge card ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Stavros Papasotiropoulos",
+    "url": "https://spapasotiropoulos.com/",
+    "image": "https://spapasotiropoulos.com/og-image.png",
+    "jobTitle": "Field Electrical Engineer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Kourtis Tech",
+      "url": "https://kourtistech.gr/"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "ASPAITE — School of Pedagogical and Technological Education",
+      "address": "Athens, Greece"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Athens",
+      "addressCountry": "GR"
+    },
+    "email": "mailto:spapasotiropoulos@gmail.com",
+    "sameAs": [
+      "https://www.linkedin.com/in/stavros-papasotiropoulos-b35302200/",
+      "https://github.com/StevePapasot"
+    ],
+    "knowsAbout": [
+      "Cybersecurity",
+      "Security Operations Center (SOC)",
+      "Wazuh SIEM",
+      "Penetration Testing",
+      "Incident Response",
+      "Threat Hunting",
+      "Electrical Engineering",
+      "Web Development"
+    ],
+    "hasCredential": [
+      { "@type": "EducationalOccupationalCredential", "name": "eCPPT — INE",                    "validIn": "2025–2028" },
+      { "@type": "EducationalOccupationalCredential", "name": "SOC Analyst L1 (SAL1) — TryHackMe", "validIn": "2025–2028" }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -265,9 +350,9 @@
           </h1>
 
           <p class="hero__role">
-            <span>Electrical&nbsp;Engineer</span>
+            <span>Field&nbsp;Electrical&nbsp;Engineer</span>
             <i>·</i>
-            <span>SOC&nbsp;L1&nbsp;Analyst</span>
+            <span>Cybersecurity&nbsp;Analyst</span>
             <i>·</i>
             <span>OSINT&nbsp;Investigator</span>
             <i>·</i>
@@ -275,16 +360,16 @@
           </p>
 
           <p class="hero__intro">
-            I monitor enterprise environments by day, hunt OSINT trails
-            by instinct, design circuits because I was trained to, and
-            teach because I always have. Scroll to fly — or click a
+            Field Electrical Engineer at Kourtis Tech today; SOC L1 Analyst
+            at Adacom yesterday; OSINT investigator by instinct, educator
+            by reflex. Scroll to fly through the network — or click a
             glowing node to pull its file.
           </p>
 
           <div class="stat-strip">
             <div class="stat">
-              <span class="stat__num">2025</span>
-              <span class="stat__lbl">SOC@ADACOM</span>
+              <span class="stat__num">2026</span>
+              <span class="stat__lbl">@KOURTIS&nbsp;TECH</span>
             </div>
             <div class="stat">
               <span class="stat__num" data-counter="11">0</span>
@@ -317,7 +402,7 @@
           <span class="module__index">MODULE_01</span>
           <span class="module__status">// ACTIVE</span>
           <h2 class="module__title">The Engineer.</h2>
-          <span class="module__sub">Educational Electrical &amp; Electronic Engineering — ASPAITE</span>
+          <span class="module__sub">Field Electrical Engineer @ Kourtis Tech · ASPAITE BSc</span>
         </header>
 
         <article class="panel panel--lg">
@@ -331,11 +416,14 @@
             <span class="panel__id">[ 01.A ]</span>
           </header>
           <p class="panel__body">
-            A bachelor's foundation in circuit design, digital and analog
-            systems, embedded systems, telecommunications and network
-            fundamentals — earned at ASPAITE. As Back Office Engineer at
-            Kapa Install I optimized technician scheduling, ran the e-shop
-            infrastructure, and led R&amp;D into emerging electrical systems.
+            Currently a <b>Field Electrical Engineer at Kourtis Tech</b> —
+            on-site installation, commissioning and systems integration
+            across diverse projects. Earlier at Kapa Install I optimised
+            technician scheduling, managed the e-shop infrastructure, and
+            led R&amp;D into emerging electrical systems. Foundation: a
+            BSc in Educational Electrical &amp; Electronic Engineering
+            from ASPAITE — circuit design, digital and analog systems,
+            embedded systems, telecommunications and networks.
           </p>
           <ul class="chips">
             <li>AutoCAD</li>
@@ -355,9 +443,9 @@
             <span class="panel__id">[ 01.B ]</span>
           </header>
           <div class="panel__metrics">
-            <div><b>2018-2025</b><span>ASPAITE BSc</span></div>
-            <div><b>Kapa Install</b><span>Back Office Engineer</span></div>
-            <div><b>R&amp;D</b><span>Emerging electrical sys</span></div>
+            <div><b>Kourtis Tech</b><span>Field Electrical Engineer · 2026–Now</span></div>
+            <div><b>Kapa Install</b><span>Back Office Engineer · 2025</span></div>
+            <div><b>2018–2025</b><span>ASPAITE BSc</span></div>
           </div>
         </article>
       </div>
@@ -371,7 +459,7 @@
           <span class="module__index">MODULE_02</span>
           <span class="module__status">// ELEVATED</span>
           <h2 class="module__title">The Cyber<br />Investigator.</h2>
-          <span class="module__sub">SOC L1 Analyst @ Adacom · eCPPT · TryHackMe</span>
+          <span class="module__sub">Former SOC L1 Analyst @ Adacom · eCPPT · TryHackMe SAL1</span>
         </header>
 
         <article class="panel panel--lg panel--accent">
@@ -385,11 +473,13 @@
             <span class="panel__id">[ 02.A ]</span>
           </header>
           <p class="panel__body">
-            I monitor client environments at Adacom, triage L1 alerts and
-            execute incident playbooks to contain real threats. I built a
-            functional SOC lab around <b>Wazuh SIEM</b> on Linux — log
-            forwarding from endpoints, custom detection rules, brute-force
-            and suspicious PowerShell investigation.
+            At <b>Adacom</b> (2025 – April 2026) I monitored client
+            environments daily, triaged L1 alerts and executed incident
+            playbooks to contain real threats — working closely with
+            security teams and system owners. Alongside this I built and
+            still maintain a functional SOC lab around <b>Wazuh SIEM</b>
+            on Linux: endpoint log forwarding, custom detection rules,
+            brute-force and suspicious PowerShell investigation.
           </p>
           <ul class="chips chips--accent">
             <li>Wazuh SIEM</li>
@@ -486,7 +576,7 @@
           <span class="module__index">MODULE_03</span>
           <span class="module__status">// BROADCASTING</span>
           <h2 class="module__title">The Educator.</h2>
-          <span class="module__sub">Tutor · Web Developer · Platform Builder</span>
+          <span class="module__sub">Private Tutor (2021–2025) · Web Developer @ Core Concepts</span>
         </header>
 
         <article class="panel panel--lg">
@@ -588,8 +678,23 @@
       }
     }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!--
+    GSAP loaded with Subresource Integrity (SRI). The browser refuses to
+    execute the file if the CDN ever serves a tampered version, defending
+    against supply-chain attacks.
+
+    TO ADD SRI TO ScrollTrigger:
+      1. Visit https://cdnjs.com/libraries/gsap/3.12.5
+      2. Click the "Copy Script Tag" button next to ScrollTrigger.min.js
+      3. Replace the second <script> below with the copied tag.
+      Until then, the Content-Security-Policy locks down which CDNs are
+      even allowed to serve scripts, providing defense-in-depth.
+  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
   <script type="module" src="main.js"></script>
 </body>
 
