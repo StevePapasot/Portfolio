@@ -103,7 +103,7 @@ const FS = {
     'EMAIL:    spapasotiropoulos@gmail.com',
     'LINKEDIN: /in/stavros-papasotiropoulos-b35302200',
     'GITHUB:   /StevePapasot',
-    'PLATFORM: greek-eduplatform-re-fc99.bolt.host',
+    'PLATFORM: eduplatform-1-pilot.netlify.app',
   ],
 };
 
@@ -314,12 +314,12 @@ const PROJECT_NODES = [
     linkLabel: '→ View Cyber Module',
   },
   {
-    label: 'PLATFORM',
-    title: 'Greek EduPlatform',
-    body: 'A full educational platform built for Greek students — curriculum, exercises and resources for Electrical Engineering courses. Deployed on Bolt.host, built with React-compatible tooling.',
-    chips: ['React', 'JavaScript', 'HTML/CSS', 'Curriculum Design'],
-    link: 'https://greek-eduplatform-re-fc99.bolt.host/',
-    linkLabel: '→ Visit Platform',
+    label: 'FLAGSHIP PROJECT',
+    title: 'EduPlatform — Greek Education SaaS',
+    body: 'A multi-tenant B2B tutoring platform I built for private tutors and small educational centres (φροντιστήρια) in Greece. Teachers manage courses, chapters and lessons (video, rich-text, PDF, quiz), schedule live Zoom rooms, and track per-student analytics — all scoped to their organisation via Firestore security rules. Includes AI-generated quizzes and theory via Google Gemini, Cloudinary for file storage, and role-based access for students, admins and super-admins.',
+    chips: ['Next.js 13', 'TypeScript', 'Firebase', 'Firestore', 'Gemini AI', 'Cloudinary', 'Tailwind', 'Multi-tenant SaaS'],
+    link: 'https://eduplatform-1-pilot.netlify.app/',
+    linkLabel: '→ Open Live Demo',
   },
   {
     label: 'CERTIFICATION',
@@ -348,8 +348,8 @@ const PROJECT_NODES = [
   {
     label: 'REPOSITORY',
     title: 'GitHub — edu-platform',
-    body: 'Source code for the educational platform project — built to scale tutoring beyond individual sessions. Open repository on GitHub.',
-    chips: ['React', 'Open Source', 'Education', 'JavaScript'],
+    body: 'Source code for EduPlatform — the multi-tenant tutoring SaaS. Next.js 13 App Router with TypeScript, Firebase Auth, Firestore with organisation-scoped security rules, Cloudinary storage, and Google Gemini for AI-generated quizzes and theory writing.',
+    chips: ['Next.js', 'TypeScript', 'Firebase', 'Open Source'],
     link: 'https://github.com/StevePapasot/edu-platform',
     linkLabel: '→ Open Repository',
   },
