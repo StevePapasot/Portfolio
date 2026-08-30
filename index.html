@@ -42,7 +42,7 @@
     X-Content-Type-Options: blocks MIME-type sniffing.
   -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://eduplatform-1-pilot.netlify.app; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
@@ -232,7 +232,8 @@
       <a href="#engineer"> <em>01</em> Engineer</a>
       <a href="#cyber"> <em>02</em> Cyber </a>
       <a href="#educator"> <em>03</em> Educator</a>
-      <a href="#contact"> <em>04</em> Comms </a>
+      <a href="#platform"> <em>04</em> Platform </a>
+      <a href="#contact"> <em>05</em> Comms </a>
     </nav>
 
     <div class="hud-top__right">
@@ -519,53 +520,62 @@
         </article>
       </div>
 
-      <!-- Horizontal toolkit -->
-      <div class="toolkit" id="toolkit">
-        <div class="toolkit__sticky">
-          <header class="toolkit__head">
-            <span class="toolkit__tag">02.C // ARSENAL</span>
-            <h3 class="toolkit__title">Tools deployed in the field.</h3>
-            <span class="toolkit__hint">→ scroll to advance the rack</span>
-          </header>
-          <div class="toolkit__rack" id="toolkit-rack">
-            <article class="tool"><span class="tool__num">/01</span>
-              <h4>Wazuh</h4>
-              <p>SIEM core. Built a working SOC lab — endpoint log forwarding, detection rules, alert triage.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-            <article class="tool"><span class="tool__num">/02</span>
-              <h4>Wireshark</h4>
-              <p>Packet dissection for traffic analysis, anomaly hunting, and protocol-level forensics.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-            <article class="tool"><span class="tool__num">/03</span>
-              <h4>Nmap</h4>
-              <p>Network reconnaissance — host discovery, service fingerprinting, scripted scans.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-            <article class="tool"><span class="tool__num">/04</span>
-              <h4>Metasploit</h4>
-              <p>Exploitation framework — used during eCPPT prep and red-team simulations.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-            <article class="tool"><span class="tool__num">/05</span>
-              <h4>Burp&nbsp;Suite</h4>
-              <p>Web app proxy — intercept, replay, fuzz. Daily driver for application-layer testing.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-            <article class="tool"><span class="tool__num">/06</span>
-              <h4>Hydra</h4>
-              <p>Authentication brute-force — credential resilience testing in lab environments.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-            <article class="tool"><span class="tool__num">/07</span>
-              <h4>Python</h4>
-              <p>Automation glue. Custom parsers, log enrichers, OSINT scripts and SIEM integrations.</p><span
-                class="tool__status">DEPLOYED</span>
-            </article>
-          </div>
+    </section>
+
+
+    <!-- ============================================================== -->
+    <!-- 02.C — ARSENAL (pinned horizontal gallery)                      -->
+    <!-- Deliberately a top-level section, NOT nested inside #cyber:     -->
+    <!-- GSAP pinning needs normal block flow. Inside a centered flex    -->
+    <!-- container the pin-spacer breaks and the cards escape layout.    -->
+    <!-- ============================================================== -->
+    <section class="toolkit-section" id="arsenal">
+        <div class="toolkit" id="toolkit">
+      <div class="toolkit__sticky">
+        <header class="toolkit__head">
+          <span class="toolkit__tag">02.C // ARSENAL</span>
+          <h3 class="toolkit__title">Tools deployed in the field.</h3>
+          <span class="toolkit__hint">→ scroll to advance the rack</span>
+        </header>
+        <div class="toolkit__rack" id="toolkit-rack">
+          <article class="tool"><span class="tool__num">/01</span>
+            <h4>Wazuh</h4>
+            <p>SIEM core. Built a working SOC lab — endpoint log forwarding, detection rules, alert triage.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
+          <article class="tool"><span class="tool__num">/02</span>
+            <h4>Wireshark</h4>
+            <p>Packet dissection for traffic analysis, anomaly hunting, and protocol-level forensics.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
+          <article class="tool"><span class="tool__num">/03</span>
+            <h4>Nmap</h4>
+            <p>Network reconnaissance — host discovery, service fingerprinting, scripted scans.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
+          <article class="tool"><span class="tool__num">/04</span>
+            <h4>Metasploit</h4>
+            <p>Exploitation framework — used during eCPPT prep and red-team simulations.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
+          <article class="tool"><span class="tool__num">/05</span>
+            <h4>Burp&nbsp;Suite</h4>
+            <p>Web app proxy — intercept, replay, fuzz. Daily driver for application-layer testing.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
+          <article class="tool"><span class="tool__num">/06</span>
+            <h4>Hydra</h4>
+            <p>Authentication brute-force — credential resilience testing in lab environments.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
+          <article class="tool"><span class="tool__num">/07</span>
+            <h4>Python</h4>
+            <p>Automation glue. Custom parsers, log enrichers, OSINT scripts and SIEM integrations.</p><span
+              class="tool__status">DEPLOYED</span>
+          </article>
         </div>
       </div>
+    </div>
     </section>
 
 
@@ -628,10 +638,274 @@
     </section>
 
 
-    <!-- MODULE 04 — ESTABLISH COMMS -->
-    <section class="module module--comms" id="contact" data-module="04">
+    <!-- ============================================================== -->
+    <!-- MODULE 04 — EDUPLATFORM — FULL-BLEED FEATURED PROJECT           -->
+    <!-- ============================================================== -->
+    <section class="module module--showcase" id="platform" data-module="04">
+
+      <!-- HEADER STRIP -->
+      <header class="showcase__head">
+        <div class="showcase__head-left">
+          <span class="showcase__index">MODULE_04 // FEATURED&nbsp;PROJECT</span>
+          <h2 class="showcase__title">
+            <span class="showcase__title-1">EduPlatform</span>
+            <span class="showcase__title-2">Greek Education SaaS</span>
+          </h2>
+          <p class="showcase__sub">
+            A multi-tenant B2B tutoring platform I built for private tutors
+            and small educational centres (<em>φροντιστήρια</em>) in Greece.
+            Teachers manage courses, chapters, lessons (video, rich-text, PDF,
+            quiz), live Zoom rooms and track per-student analytics — all
+            scoped to their organisation via Firestore security rules.
+          </p>
+        </div>
+        <div class="showcase__head-right">
+          <div class="showcase__badge">
+            <span class="showcase__badge-dot"></span>
+            <span class="showcase__badge-txt">LIVE&nbsp;DEMO</span>
+          </div>
+          <a class="showcase__primary-cta"
+             href="https://eduplatform-1-pilot.netlify.app/"
+             target="_blank" rel="noopener">
+            <span>Open Live Demo</span>
+            <span class="cta__rune">↗</span>
+          </a>
+          <a class="showcase__secondary-cta"
+             href="https://github.com/StevePapasot/edu-platform"
+             target="_blank" rel="noopener">
+            <span>Source on GitHub</span>
+            <span class="cta__rune">↗</span>
+          </a>
+        </div>
+      </header>
+
+
+      <!-- LIVE EMBED FRAME -->
+      <div class="showcase__frame">
+        <div class="panel__corner panel__corner--tl"></div>
+        <div class="panel__corner panel__corner--tr"></div>
+        <div class="panel__corner panel__corner--bl"></div>
+        <div class="panel__corner panel__corner--br"></div>
+
+        <div class="showcase__frame-bar">
+          <span class="showcase__frame-dots">
+            <i></i><i></i><i></i>
+          </span>
+          <span class="showcase__frame-url">
+            <span class="lock">🔒</span> eduplatform-1-pilot.netlify.app
+          </span>
+          <a class="showcase__frame-open"
+             href="https://eduplatform-1-pilot.netlify.app/"
+             target="_blank" rel="noopener"
+             aria-label="Open EduPlatform in new tab">↗</a>
+        </div>
+
+        <!-- Live iframe — real embed of the platform. Users can click "open" to launch full. -->
+        <div class="showcase__frame-body">
+          <iframe
+            class="showcase__iframe"
+            src="https://eduplatform-1-pilot.netlify.app/"
+            title="EduPlatform Live Demo"
+            referrerpolicy="no-referrer"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+            aria-label="Live preview of EduPlatform"></iframe>
+
+          <!-- Overlay for when the iframe is blocked (some sites deny embedding via X-Frame-Options).
+               JS toggles .is-blocked on the frame if the iframe fails to load within 4s. -->
+          <div class="showcase__frame-fallback" aria-hidden="true">
+            <div class="fallback__inner">
+              <span class="fallback__label">// PREVIEW UNAVAILABLE</span>
+              <p class="fallback__body">
+                The embedded preview is blocked by the platform's security
+                headers (that's a good thing — it means CSP works).
+              </p>
+              <a class="fallback__cta"
+                 href="https://eduplatform-1-pilot.netlify.app/"
+                 target="_blank" rel="noopener">
+                → Open in a new tab
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ROLE TABS: Student / Teacher / Super Admin -->
+      <div class="showcase__roles">
+        <div class="roles__tabs" role="tablist" aria-label="EduPlatform roles">
+          <button class="roles__tab is-active" role="tab" aria-selected="true"  data-role="student">
+            <span class="roles__tab-num">01</span>
+            <span class="roles__tab-lbl">For Students</span>
+          </button>
+          <button class="roles__tab" role="tab" aria-selected="false" data-role="teacher">
+            <span class="roles__tab-num">02</span>
+            <span class="roles__tab-lbl">For Teachers</span>
+          </button>
+          <button class="roles__tab" role="tab" aria-selected="false" data-role="admin">
+            <span class="roles__tab-num">03</span>
+            <span class="roles__tab-lbl">For Super Admin</span>
+          </button>
+        </div>
+
+        <div class="roles__panels">
+
+          <!-- STUDENT panel -->
+          <article class="roles__panel is-active" role="tabpanel" data-role="student">
+            <h3 class="roles__title">Students learn, track, and join live sessions.</h3>
+            <ul class="roles__list">
+              <li><span>›</span> Sign up with an organisation invite code — auto-scoped to that org</li>
+              <li><span>›</span> Choose school type, grade, orientation and sector (full Greek education system)</li>
+              <li><span>›</span> Browse courses filtered by grade</li>
+              <li><span>›</span> Watch video lessons, read theory (rich text), view PDFs in-browser, and take multi-choice quizzes</li>
+              <li><span>›</span> Progress tracking per course with completion percentages</li>
+              <li><span>›</span> Quiz retries with full answer review and explanations</li>
+              <li><span>›</span> Join live Zoom rooms scheduled by the teacher</li>
+              <li><span>›</span> Profile settings with instant dashboard refresh · password reset via email</li>
+            </ul>
+          </article>
+
+          <!-- TEACHER panel -->
+          <article class="roles__panel" role="tabpanel" data-role="teacher">
+            <h3 class="roles__title">Teachers build content and track analytics — end to end.</h3>
+            <ul class="roles__list">
+              <li><span>›</span> <b>Builder Pro</b> admin panel: Courses → Chapters → Lessons → Live Rooms</li>
+              <li><span>›</span> Upload content in 4 formats: 🎥 Video · 📝 Rich Text · 📄 PDF · ❓ Quiz</li>
+              <li><span>›</span> <b>AI-powered quiz generation</b> (3/5/10 questions) via Google Gemini</li>
+              <li><span>›</span> <b>AI theory writing</b> — generate lesson explanations from a prompt</li>
+              <li><span>›</span> Cascade delete: chapters → lessons → progress → live rooms</li>
+              <li><span>›</span> Quiz builder with drag-to-reorder, 4-choice questions, correct-answer marking</li>
+              <li><span>›</span> Schedule and manage live Zoom / Teams / Webex rooms per course</li>
+              <li><span>›</span> <b>Analytics dashboard</b>: student count, completions, quiz averages, per-course progress bars, searchable/sortable student table</li>
+            </ul>
+          </article>
+
+          <!-- ADMIN panel -->
+          <article class="roles__panel" role="tabpanel" data-role="admin">
+            <h3 class="roles__title">Super Admin governs the platform across organisations.</h3>
+            <ul class="roles__list">
+              <li><span>›</span> Cross-organisation access to all data</li>
+              <li><span>›</span> Promote users to admin role</li>
+              <li><span>›</span> Create and manage organisations with invite codes</li>
+              <li><span>›</span> Suspend / reactivate organisations</li>
+              <li><span>›</span> Override any security rule (Firestore rules bypass)</li>
+              <li><span>›</span> Full audit visibility across every tenant</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+
+      <!-- ARCHITECTURE DIAGRAM -->
+      <div class="showcase__arch">
+        <header class="showcase__section-head">
+          <span class="showcase__section-tag">04.A // ARCHITECTURE</span>
+          <h3 class="showcase__section-title">Multi-tenant by design.</h3>
+        </header>
+
+        <div class="arch">
+          <!-- Row 1: Frontend -->
+          <div class="arch__row">
+            <div class="arch__node arch__node--frontend">
+              <span class="arch__node-lbl">FRONTEND</span>
+              <b>Next.js 13 · App Router</b>
+              <span class="arch__node-sub">TypeScript · Tailwind · ReactQuill</span>
+            </div>
+          </div>
+
+          <div class="arch__connector">
+            <span></span><span></span>
+          </div>
+
+          <!-- Row 2: Backend + Storage + AI -->
+          <div class="arch__row arch__row--three">
+            <div class="arch__node arch__node--auth">
+              <span class="arch__node-lbl">AUTH · DATA</span>
+              <b>Firebase</b>
+              <span class="arch__node-sub">Auth · Firestore · Security Rules</span>
+            </div>
+            <div class="arch__node arch__node--storage">
+              <span class="arch__node-lbl">FILE STORAGE</span>
+              <b>Cloudinary</b>
+              <span class="arch__node-sub">PDFs · images · signed uploads</span>
+            </div>
+            <div class="arch__node arch__node--ai">
+              <span class="arch__node-lbl">AI</span>
+              <b>Google Gemini</b>
+              <span class="arch__node-sub">Quiz gen · theory writing</span>
+            </div>
+          </div>
+
+          <div class="arch__connector">
+            <span></span><span></span>
+          </div>
+
+          <!-- Row 3: Multi-tenant model -->
+          <div class="arch__row">
+            <div class="arch__node arch__node--tenant">
+              <span class="arch__node-lbl">MULTI-TENANT</span>
+              <b>Organisation-scoped data</b>
+              <span class="arch__node-sub">
+                Every read/write filtered by <code>orgId</code> · Firestore rules
+                enforce RBAC (student · admin · superAdmin) · DOMPurify XSS
+                sanitisation on all rendered HTML
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- TECH STACK GRID -->
+      <div class="showcase__stack">
+        <header class="showcase__section-head">
+          <span class="showcase__section-tag">04.B // STACK</span>
+          <h3 class="showcase__section-title">Every layer, every dependency.</h3>
+        </header>
+
+        <div class="stack">
+          <div class="stack__cell"><span>Framework</span><b>Next.js 13 App Router</b></div>
+          <div class="stack__cell"><span>Language</span><b>TypeScript</b></div>
+          <div class="stack__cell"><span>Auth</span><b>Firebase Authentication</b></div>
+          <div class="stack__cell"><span>Database</span><b>Cloud Firestore</b></div>
+          <div class="stack__cell"><span>File Storage</span><b>Cloudinary</b></div>
+          <div class="stack__cell"><span>AI</span><b>Google Gemini API</b></div>
+          <div class="stack__cell"><span>Styling</span><b>Tailwind CSS</b></div>
+          <div class="stack__cell"><span>Icons</span><b>Lucide React</b></div>
+          <div class="stack__cell"><span>Rich Text</span><b>ReactQuill</b></div>
+          <div class="stack__cell"><span>Toast</span><b>react-hot-toast</b></div>
+          <div class="stack__cell"><span>Security</span><b>DOMPurify + FS Rules</b></div>
+          <div class="stack__cell"><span>Hosting</span><b>Netlify</b></div>
+        </div>
+      </div>
+
+
+      <!-- HIGHLIGHT METRICS -->
+      <div class="showcase__metrics">
+        <div class="showcase__metric">
+          <span class="showcase__metric-num">3</span>
+          <span class="showcase__metric-lbl">Role types<br/>Student · Admin · SuperAdmin</span>
+        </div>
+        <div class="showcase__metric">
+          <span class="showcase__metric-num">4</span>
+          <span class="showcase__metric-lbl">Lesson formats<br/>Video · Text · PDF · Quiz</span>
+        </div>
+        <div class="showcase__metric">
+          <span class="showcase__metric-num">🇬🇷</span>
+          <span class="showcase__metric-lbl">Fully localised<br/>Greek UI + curriculum data</span>
+        </div>
+        <div class="showcase__metric">
+          <span class="showcase__metric-num">AI</span>
+          <span class="showcase__metric-lbl">Gemini-generated<br/>Quizzes &amp; theory</span>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- MODULE 05 — ESTABLISH COMMS -->
+    <section class="module module--comms" id="contact" data-module="05">
       <header class="comms__head">
-        <span class="comms__index">MODULE_04 // ESTABLISH&nbsp;COMMS</span>
+        <span class="comms__index">MODULE_05 // ESTABLISH&nbsp;COMMS</span>
         <h2 class="comms__title">Open a channel.</h2>
         <p class="comms__sub">Active for SOC, security engineering, threat-hunting and cyber-defence roles.</p>
       </header>

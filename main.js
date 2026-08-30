@@ -689,23 +689,51 @@ ScrollTrigger.create({
   },
 });
 
-// Section fade-ins
+// Section fade-ins.
+// NOTE: this must NOT leave a lingering transform on .module, because a
+// transformed ancestor breaks position:fixed/sticky — which the pinned
+// toolkit gallery depends on. So we run it once and clear the transform
+// afterwards with clearProps.
 gsap.utils.toArray('.module').forEach((sec) => {
-  gsap.fromTo(sec, { opacity: 0, y: 60 }, {
-    opacity: 1, y: 0, duration: 1, ease: 'power2.out',
-    scrollTrigger: { trigger: sec, start: 'top 75%', end: 'top 30%', scrub: 1 },
-  });
+  gsap.fromTo(sec,
+    { opacity: 0, y: 60 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.9, ease: 'power2.out',
+      clearProps: 'transform',   // critical: removes the transform when done
+      scrollTrigger: {
+        trigger: sec,
+        start: 'top 80%',
+        once: true,
+      },
+    }
+  );
 });
 
-// Horizontal toolkit — only pin on desktop (>=1024px). Mobile gets native swipe.
-const toolkit = document.getElementById('toolkit');
+// Horizontal toolkit — pinned horizontal scroll on desktop (>=1024px).
+// #arsenal is a top-level block-flow section (NOT nested inside a centered
+// flex .module), which is what GSAP pinning requires. We pin the section
+// itself and slide the rack horizontally as the user scrolls.
+const arsenal = document.getElementById('arsenal');
 const rack = document.getElementById('toolkit-rack');
-if (toolkit && rack && window.innerWidth >= 1024) {
-  ScrollTrigger.create({
-    trigger: toolkit, start: 'top top', end: 'bottom bottom', scrub: 1,
-    onUpdate: (self) => {
-      const d = rack.scrollWidth - window.innerWidth + 200;
-      rack.style.transform = `translate3d(${-d * self.progress}px, 0, 0)`;
+
+if (arsenal && rack && window.innerWidth >= 1024) {
+  // Horizontal distance needed to bring the last card fully into view.
+  const getDistance = () =>
+    Math.max(0, rack.scrollWidth - window.innerWidth + 200);
+
+  gsap.to(rack, {
+    x: () => -getDistance(),
+    ease: 'none',
+    scrollTrigger: {
+      trigger: arsenal,
+      start: 'top top',
+      end: () => '+=' + getDistance(),   // 1:1 scroll-to-travel mapping
+      pin: true,                          // pin the section itself
+      pinSpacing: true,
+      scrub: 1,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,          // recompute on resize
     },
   });
 }
@@ -1391,3 +1419,161 @@ gsap.from('.hud-top', { opacity: 0, y: -20, duration: 1, ease: 'power2.out', del
 gsap.from('.rail', { opacity: 0, x: (i) => (i === 0 ? -40 : 40), duration: 1, ease: 'power2.out', delay: 1.8, stagger: 0.15 });
 gsap.from('.hud-bottom', { opacity: 0, y: 20, duration: 1, ease: 'power2.out', delay: 2.0 });
 gsap.from('.hero__name, .hero__role, .hero__intro, .stat-strip', { opacity: 0, y: 30, duration: 1.2, ease: 'power3.out', stagger: 0.12, delay: 2.2 });
+
+/* =====================================================================
+   ✦ SHOWCASE MODULE — EduPlatform featured project
+   ---------------------------------------------------------------------
+   Two behaviours:
+     1. Role tabs (Student / Teacher / Super Admin) — click to switch panel
+     2. Iframe fallback — if the embedded demo is blocked by the target
+        site's X-Frame-Options / CSP frame-ancestors, show a graceful
+        fallback card instead of an empty white box.
+   ===================================================================== */
+(function initShowcase() {
+
+  /* ---- 1. ROLE TABS ------------------------------------------------ */
+  const tabs   = document.querySelectorAll('.roles__tab');
+  const panels = document.querySelectorAll('.roles__panel');
+
+  if (tabs.length && panels.length) {
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const role = tab.dataset.role;
+
+        // Update tab states
+        tabs.forEach((t) => {
+          const active = t === tab;
+          t.classList.toggle('is-active', active);
+          t.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+
+        // Update panel states
+        panels.forEach((p) => {
+          p.classList.toggle('is-active', p.dataset.role === role);
+        });
+      });
+
+      // Keyboard support — arrow keys move between tabs
+      tab.addEventListener('keydown', (e) => {
+        const list = Array.from(tabs);
+        const idx  = list.indexOf(tab);
+        let next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = list[(idx + 1) % list.length];
+        if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   next = list[(idx - 1 + list.length) % list.length];
+        if (next) { e.preventDefault(); next.focus(); next.click(); }
+      });
+    });
+  }
+
+
+  /* ---- 2. IFRAME FALLBACK DETECTION -------------------------------- */
+  // Sites can block embedding via X-Frame-Options / CSP frame-ancestors.
+  // We can't inspect a cross-origin frame, so detection is heuristic.
+  // IMPORTANT: be conservative — a false "blocked" hides a working demo.
+  //   • Only start the timer once the frame is actually near the viewport.
+  //   • Treat a cross-origin security error as SUCCESS (means real content).
+  //   • Give it a generous window before giving up.
+  const frame  = document.querySelector('.showcase__frame');
+  const iframe = document.querySelector('.showcase__iframe');
+
+  if (frame && iframe) {
+    let settled = false;
+
+    function markBlocked() {
+      if (settled) return;
+      settled = true;
+      frame.classList.add('is-blocked');
+    }
+    function markOK() {
+      settled = true;
+      frame.classList.remove('is-blocked');
+    }
+
+    iframe.addEventListener('load', () => {
+      // If we can read the document AND it's genuinely empty, the load was
+      // a blocked/about:blank shell. If reading throws, it's cross-origin
+      // content that loaded fine — the success path.
+      try {
+        const doc = iframe.contentDocument;
+        if (doc && doc.location && doc.location.href === 'about:blank') {
+          markBlocked();
+          return;
+        }
+        if (doc && doc.body && doc.body.childElementCount === 0) {
+          markBlocked();
+          return;
+        }
+        markOK();
+      } catch (err) {
+        // SecurityError reading cross-origin frame == it loaded real content
+        markOK();
+      }
+    });
+
+    iframe.addEventListener('error', markBlocked);
+
+    // Only start the give-up timer once the frame scrolls into view, so a
+    // slow-loading demo far down the page isn't wrongly flagged.
+    const startTimer = () => {
+      setTimeout(() => { if (!settled) markBlocked(); }, 12000);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            startTimer();
+            io.disconnect();
+          }
+        });
+      }, { rootMargin: '200px' });
+      io.observe(frame);
+    } else {
+      startTimer();
+    }
+  }
+
+
+  /* ---- 3. SCROLL REVEAL for showcase sub-blocks -------------------- */
+  // The parent .module already fades in via the generic ScrollTrigger.
+  // These add a subtle stagger to the inner blocks.
+  if (window.gsap && window.ScrollTrigger) {
+    const blocks = [
+      '.showcase__frame',
+      '.showcase__roles',
+      '.showcase__arch',
+      '.showcase__stack',
+      '.showcase__metrics',
+    ];
+    blocks.forEach((sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return;
+      gsap.fromTo(el,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.9, ease: 'power2.out',
+          clearProps: 'transform',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        }
+      );
+    });
+  }
+})();
+
+
+/* =====================================================================
+   SCROLLTRIGGER REFRESH — recalculate all pin/scroll distances once
+   fonts and images have finished loading and the layout has settled.
+   Without this, the pinned toolkit can measure the wrong scroll length.
+   ===================================================================== */
+window.addEventListener('load', () => {
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
+});
+
+// Web fonts can shift layout after `load` — refresh again once ready.
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  });
+}
