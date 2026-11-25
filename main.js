@@ -1019,6 +1019,13 @@ const EXPLORER_ITEMS = [
   // ── WORK EXPERIENCE (green) ────────────────────────────────────
   {
     type: 'work',
+    title: 'Electrical Engineer (permanent staff)',
+    org: '731 ΔΣΕ · Hellenic Army / Ministry of National Defence',
+    period: 'From 7 January 2027',
+    body: 'Military Works Directorate. Tender documentation, cost estimation, technical specifications and contract award procedures for infrastructure works.',
+  },
+  {
+    type: 'work',
     title: 'Field Electrical Engineer',
     org: 'Kourtis Tech',
     period: 'May 2026 – Present',
