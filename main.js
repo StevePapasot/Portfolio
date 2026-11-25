@@ -966,11 +966,11 @@ for (let i = 0; i < 8; i++) pushFeedItem();
 // -- COUNTERS -------------------------------------------------------
 document.querySelectorAll('[data-counter]').forEach((el) => {
   const target = +el.dataset.counter;
-  gsap.to(el, { innerText: target, duration: 1.6, ease: 'power2.out', snap: { innerText: 1 }, delay: 0.4, onUpdate() { el.innerText = Math.floor(el.innerText); } });
+  gsap.fromTo(el, { innerText: 0 }, { innerText: target, duration: 1.6, ease: 'power2.out', snap: { innerText: 1 }, delay: 0.4, onUpdate() { el.innerText = Math.floor(el.innerText); } });
 });
 
 // -- TICKER ---------------------------------------------------------
-const TICKER_ITEMS = ['STATUS · ALL SYSTEMS NOMINAL', 'SOC L1 ANALYST · ADACOM · ATHENS', 'eCPPT · CERTIFIED PENETRATION TESTER', 'WAZUH SIEM · LAB ENV · OPERATIONAL', 'PYTHON · REACT.JS · BURP · NMAP · METASPLOIT', 'OSINT · INVESTIGATIVE · ENUMERATION', 'EDUCATIONAL ELECTRICAL ENGINEERING · ASPAITE', 'PRIVATE TUTOR · 2021–PRESENT', 'CLICK A GLOWING NODE TO PULL ITS FILE', '↑↑↓↓←→←→BA // CLASSIFIED ACCESS'];
+const TICKER_ITEMS = ['STATUS · ALL SYSTEMS NOMINAL', 'FORMER SOC L1 ANALYST · ADACOM · ATHENS', 'eCPPT · CERTIFIED PENETRATION TESTER', 'WAZUH SIEM · LAB ENV · OPERATIONAL', 'PYTHON · REACT.JS · BURP · NMAP · METASPLOIT', 'OSINT · INVESTIGATIVE · ENUMERATION', 'EDUCATIONAL ELECTRICAL ENGINEERING · ASPAITE', 'PRIVATE TUTOR · 2021–PRESENT', 'CLICK A GLOWING NODE TO PULL ITS FILE', '↑↑↓↓←→←→BA // CLASSIFIED ACCESS'];
 const tickerEl = document.getElementById('ticker');
 if (tickerEl) {
   const html = TICKER_ITEMS.map(t => `<span>${t}</span>`).join('');
@@ -1051,7 +1051,7 @@ const EXPLORER_ITEMS = [
     type: 'work',
     title: 'Private Tutor',
     org: 'Freelance',
-    period: '2021 – 2025',
+    period: '2021 – Present',
     body: 'Taught junior high, high school and tertiary-level students in Electrical Engineering — in person, remotely, and at tutorial centres across Athens.',
   },
 
