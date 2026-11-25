@@ -42,7 +42,7 @@
     X-Content-Type-Options: blocks MIME-type sniffing.
   -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://eduplatform-1-pilot.netlify.app; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self' https://eduplatform-1-pilot.netlify.app; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
@@ -58,7 +58,7 @@
     rel="stylesheet" />
 
   <!-- NOTE: bump ?v=10 whenever you edit this file, so browsers fetch the new copy -->
-  <link rel="stylesheet" href="style.css?v=12" />
+  <link rel="stylesheet" href="style.css?v=13" />
 
   <!-- ── JSON-LD STRUCTURED DATA — helps Google build a knowledge card ── -->
   <script type="application/ld+json">
@@ -508,6 +508,9 @@
             <span>› Jr Penetration Tester — TryHackMe</span>
             <span>› Complete Ethical Hacking — Udemy</span>
           </div>
+          <a class="cta" href="#playbook">
+            <span>→ Read my SOC Analyst Playbook</span><span class="cta__rune">↓</span>
+          </a>
         </article>
 
         <article class="panel panel--explorer">
@@ -585,6 +588,74 @@
         </div>
       </div>
     </div>
+    </section>
+
+
+    <!-- MODULE 02.D — FIELD MANUAL: SOC ANALYST PLAYBOOK -->
+    <section class="module module--playbook" id="playbook" data-module="02D">
+      <div class="module__layout">
+        <header class="module__label">
+          <span class="module__index">MODULE_02.D</span>
+          <span class="module__status">// FIELD MANUAL</span>
+          <h2 class="module__title">The SOC Analyst<br />Playbook.</h2>
+          <span class="module__sub">Free PDF · 126 pages · 14 triage playbooks</span>
+        </header>
+
+        <article class="panel panel--lg playbook">
+          <div class="panel__corner panel__corner--tl"></div>
+          <div class="panel__corner panel__corner--tr"></div>
+          <div class="panel__corner panel__corner--bl"></div>
+          <div class="panel__corner panel__corner--br"></div>
+          <div class="panel__scan"></div>
+          <header class="panel__head">
+            <span class="panel__tag">DOSSIER // field-guide.pdf</span>
+            <span class="panel__id">[ 02.D ]</span>
+          </header>
+          <div class="playbook__grid">
+            <a class="playbook__cover" href="playbook/SOC_Analyst_Playbook.pdf" target="_blank" rel="noopener" aria-label="Open the SOC Analyst Playbook PDF">
+              <img src="playbook/cover.jpg" width="771" height="1010" loading="lazy" alt="Cover of the SOC Analyst Playbook by Stavros Papasotiropoulos" />
+            </a>
+            <div class="playbook__info">
+              <p class="panel__body">
+                Alert triage, investigation and client reporting, written up
+                from my L1 shifts on a QRadar MSSP SOC and fully sanitised.
+                Windows &amp; AD, EDR, VPN and firewall, WAF, Microsoft 365
+                and email, plus case templates and AQL / KQL hunting queries.
+              </p>
+              <ul class="chips">
+                <li>QRadar</li><li>Sentinel</li><li>Defender XDR</li><li>MITRE ATT&amp;CK</li><li>AQL · KQL</li>
+              </ul>
+              <div class="playbook__actions">
+                <a class="cta" href="playbook/SOC_Analyst_Playbook.pdf" target="_blank" rel="noopener">
+                  <span>→ Preview online</span><span class="cta__rune">↗</span>
+                </a>
+                <a class="cta cta--alt" href="playbook/SOC_Analyst_Playbook.pdf" download="SOC_Analyst_Playbook_Papasotiropoulos.pdf">
+                  <span>↓ Download PDF</span><span class="cta__rune">0.7&nbsp;MB</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="playbook__pages" aria-label="Sample pages">
+            <a href="playbook/SOC_Analyst_Playbook.pdf#page=8" target="_blank" rel="noopener"><img src="playbook/page-1.jpg" width="631" height="826" loading="lazy" alt="Sample page: the triage method" /></a>
+            <a href="playbook/SOC_Analyst_Playbook.pdf#page=26" target="_blank" rel="noopener"><img src="playbook/page-2.jpg" width="631" height="826" loading="lazy" alt="Sample page: suspicious process execution playbook" /></a>
+            <a href="playbook/SOC_Analyst_Playbook.pdf#page=98" target="_blank" rel="noopener"><img src="playbook/page-3.jpg" width="631" height="826" loading="lazy" alt="Sample page: client case template" /></a>
+            <a href="playbook/SOC_Analyst_Playbook.pdf#page=110" target="_blank" rel="noopener"><img src="playbook/page-4.jpg" width="631" height="826" loading="lazy" alt="Sample page: hunting queries" /></a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Inline reader (desktop/tablet only; phones get the page strip + open/download) -->
+      <div class="showcase__frame playbook__reader">
+        <div class="showcase__frame-bar">
+          <span class="showcase__frame-dots"><i></i><i></i><i></i></span>
+          <span class="showcase__frame-url"><span class="lock">🔒</span> spapasotiropoulos.com/playbook/SOC_Analyst_Playbook.pdf</span>
+          <a class="showcase__frame-open" href="playbook/SOC_Analyst_Playbook.pdf" target="_blank" rel="noopener" aria-label="Open the playbook in a new tab">↗</a>
+        </div>
+        <div class="showcase__frame-body">
+          <iframe class="playbook__iframe" src="playbook/SOC_Analyst_Playbook.pdf#view=FitH&amp;pagemode=none" title="SOC Analyst Playbook — PDF preview" loading="lazy"></iframe>
+        </div>
+      </div>
     </section>
 
 
@@ -917,10 +988,6 @@
         <span class="comms__index">MODULE_05 // ESTABLISH&nbsp;COMMS</span>
         <h2 class="comms__title">Open a channel.</h2>
         <p class="comms__sub">Active for SOC, security engineering, threat-hunting and cyber-defence roles.</p>
-        <a class="medium-badge" href="https://medium.com/@spapasotiropoulos" target="_blank" rel="noopener" aria-label="Read my articles on Medium">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8.5 11h7M8.5 14h7M8.5 17h4.5"/></svg>
-          <span>Medium</span>
-        </a>
       </header>
 
       <div class="comms__grid">
@@ -933,6 +1000,11 @@
           rel="noopener">
           <span class="comm-card__lbl">// LINKEDIN</span>
           <span class="comm-card__val">/in/stavros-papasotiropoulos</span>
+          <span class="comm-card__arrow">↗</span>
+        </a>
+        <a class="comm-card comm-card--medium" href="https://medium.com/@spapasotiropoulos" target="_blank" rel="noopener">
+          <span class="comm-card__lbl">// MEDIUM · ARTICLES</span>
+          <span class="comm-card__val">@spapasotiropoulos</span>
           <span class="comm-card__arrow">↗</span>
         </a>
         <a class="comm-card" href="https://github.com/StevePapasot" target="_blank" rel="noopener">
@@ -982,7 +1054,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"
     referrerpolicy="no-referrer"></script>
-  <script type="module" src="main.js?v=12"></script>
+  <script type="module" src="main.js?v=13"></script>
 </body>
 
 </html>
