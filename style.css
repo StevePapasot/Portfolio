@@ -3419,15 +3419,8 @@ main {
 }
 .playbook__pages a { border: 1px solid var(--glass-border); border-radius: 4px; overflow: hidden; opacity: .85; transition: opacity .25s, transform .25s; }
 .playbook__pages a:hover { opacity: 1; transform: translateY(-3px); }
-.playbook__reader { margin-top: 2rem; }
-.playbook__reader .showcase__frame-body { height: min(80vh, 900px); }
-.playbook__iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
 #cyber .certs + .cta { min-width: 0; }
 
-/* Phones & small tablets: no inline PDF reader (mobile browsers can't embed PDFs) */
-@media (max-width: 1023px) {
-  .playbook__reader { display: none; }
-}
 @media (max-width: 767px) {
   .playbook__grid { grid-template-columns: 1fr; }
   .playbook__cover { max-width: 240px; margin: 0 auto; }

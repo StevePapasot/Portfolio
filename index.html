@@ -42,7 +42,7 @@
     X-Content-Type-Options: blocks MIME-type sniffing.
   -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src 'self' https://eduplatform-1-pilot.netlify.app; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" />
+    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://eduplatform-1-pilot.netlify.app; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
@@ -58,7 +58,7 @@
     rel="stylesheet" />
 
   <!-- NOTE: bump ?v=10 whenever you edit this file, so browsers fetch the new copy -->
-  <link rel="stylesheet" href="style.css?v=13" />
+  <link rel="stylesheet" href="style.css?v=14" />
 
   <!-- ── JSON-LD STRUCTURED DATA — helps Google build a knowledge card ── -->
   <script type="application/ld+json">
@@ -645,17 +645,6 @@
         </article>
       </div>
 
-      <!-- Inline reader (desktop/tablet only; phones get the page strip + open/download) -->
-      <div class="showcase__frame playbook__reader">
-        <div class="showcase__frame-bar">
-          <span class="showcase__frame-dots"><i></i><i></i><i></i></span>
-          <span class="showcase__frame-url"><span class="lock">🔒</span> spapasotiropoulos.com/playbook/SOC_Analyst_Playbook.pdf</span>
-          <a class="showcase__frame-open" href="playbook/SOC_Analyst_Playbook.pdf" target="_blank" rel="noopener" aria-label="Open the playbook in a new tab">↗</a>
-        </div>
-        <div class="showcase__frame-body">
-          <iframe class="playbook__iframe" src="playbook/SOC_Analyst_Playbook.pdf#view=FitH&amp;pagemode=none" title="SOC Analyst Playbook — PDF preview" loading="lazy"></iframe>
-        </div>
-      </div>
     </section>
 
 
